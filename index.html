@@ -281,22 +281,22 @@
   <!-- JavaScript Modules & App Logic -->
   <script type="module">
     // KONFIGURASI APLIKASI
-    const IS_PREVIEW = false; // Set false saat publikasi / deploy produksi
+    const IS_PREVIEW = false; // Terhubung penuh ke Firebase Firestore
 
     // FIREBASE CONFIGURATION
-   const firebaseConfig = {
-  apiKey: "AIzaSyDC_5Ds6w5SLzPBpGlaNa_Ms4JPspInsPA",
-  authDomain: "perpus-min-8-sragen.firebaseapp.com",
-  projectId: "perpus-min-8-sragen",
-  storageBucket: "perpus-min-8-sragen.firebasestorage.app",
-  messagingSenderId: "650935529940",
-  appId: "1:650935529940:web:8b145c32bb86aeed2b2641"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDC_5Ds6w5SLzPBpGlaNa_Ms4JPspInsPA",
+      authDomain: "perpus-min-8-sragen.firebaseapp.com",
+      projectId: "perpus-min-8-sragen",
+      storageBucket: "perpus-min-8-sragen.firebasestorage.app",
+      messagingSenderId: "650935529940",
+      appId: "1:650935529940:web:8b145c32bb86aeed2b2641"
+    };
 
     // Import Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Initialize Firebase
     let app, auth, db;
@@ -319,81 +319,17 @@
     let state = {
       currentUser: null,
       activeMenu: 'dashboard',
-      bookViewMode: 'grid', // 'grid' atau 'table'
+      bookViewMode: 'grid',
       libraryProfile: {
-        schoolName: 'MTs / SMA Negeri 1 Bangsa',
-        libraryName: 'Perpustakaan Baitul Hikmah',
-        address: 'Jl. Pendidikan No. 45, Kota Belajar',
-        headmaster: 'Drs. H. Ahmad Wijaya, M.Pd',
-        nip: '19750812 200212 1 002'
+        schoolName: 'MIN 8 Sragen',
+        libraryName: 'Perpustakaan Punjering Kaweruh',
+        address: 'Jl. Raya Sragen KM. 8, Sragen',
+        headmaster: 'Drs. H. Ahmad Fauzi, M.Pd.I',
+        nip: '19700512 199803 1 005'
       },
-      books: [
-        { 
-          id: 'b1', 
-          no: 1, 
-          title: 'Laskar Pelangi', 
-          author: 'Andrea Hirata', 
-          publisher: 'Bentang Pustaka', 
-          city: 'Yogyakarta', 
-          year: '2005', 
-          pages: 529, 
-          isbn: '978-979-3062-79-2', 
-          callNumber: '813 HIR l', 
-          summary: 'Kisah perjuangan 10 anak Laskar Pelangi di Belitung.', 
-          price: 85000, 
-          category: 'Novel', 
-          stock: 5, 
-          available: 3, 
-          pdfUrl: 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
-          coverColor: 'from-blue-500 to-indigo-600' 
-        },
-        { 
-          id: 'b2', 
-          no: 2, 
-          title: 'Matematika Kelas X', 
-          author: 'Kemenag RI', 
-          publisher: 'Kementerian Agama', 
-          city: 'Jakarta', 
-          year: '2021', 
-          pages: 240, 
-          isbn: '978-602-244-332-2', 
-          callNumber: '510 KEM m', 
-          summary: 'Buku teks utama matematika tingkat MA/SMA.', 
-          price: 65000, 
-          category: 'Pelajaran', 
-          stock: 20, 
-          available: 18, 
-          pdfUrl: '',
-          coverColor: 'from-emerald-500 to-teal-600' 
-        },
-        { 
-          id: 'b3', 
-          no: 3, 
-          title: 'Bumi Manusia', 
-          author: 'Pramoedya Ananta Toer', 
-          publisher: 'Lentera Dipantara', 
-          city: 'Jakarta', 
-          year: '1980', 
-          pages: 535, 
-          isbn: '978-979-97312-3-4', 
-          callNumber: '813 TOER b', 
-          summary: 'Kisah Minke di masa kebangkitan nasional.', 
-          price: 95000, 
-          category: 'Sastra', 
-          stock: 8, 
-          available: 6, 
-          pdfUrl: '',
-          coverColor: 'from-amber-500 to-orange-600' 
-        }
-      ],
-      members: [
-        { no: 1, name: 'Ahmad Fauzi', id: '1001', status: 'aktif', class: 'X-IPA-1', address: 'Jl. Merdeka No. 12', role: 'siswa', password: '123' },
-        { no: 2, name: 'Siti Nurhaliza', id: '1002', status: 'aktif', class: 'XI-IPS-2', address: 'Jl. Mawar No. 4', role: 'siswa', password: '123' },
-        { no: 3, name: 'Budi Santoso, S.Pd', id: '2001', status: 'aktif', class: 'Guru Bahasa', address: 'Jl. Melati No. 8', role: 'guru', password: '123' }
-      ],
-      transactions: [
-        { id: 't1', memberId: '1001', memberName: 'Ahmad Fauzi', bookId: 'b1', bookTitle: 'Laskar Pelangi', borrowDate: '2026-10-20', dueDate: '2026-10-27', status: 'terlambat', fine: 2000 }
-      ]
+      books: [],
+      members: [],
+      transactions: []
     };
 
     // Navigation Items
@@ -405,6 +341,159 @@
       { id: 'mybooks', label: 'Buku Saya', icon: 'bookmark', roles: ['siswa', 'guru'] },
       { id: 'reports', label: 'Laporan', icon: 'bar-chart-3', roles: ['admin'] }
     ];
+
+    // AUTH STATE LISTENER
+    if (!IS_PREVIEW && auth) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          state.currentUser = {
+            id: user.uid,
+            name: user.email.split('@')[0],
+            email: user.email,
+            role: 'admin'
+          };
+        } else {
+          state.currentUser = null;
+        }
+        renderNavigation();
+        renderUserBadge();
+      });
+    }
+
+    // LOGIN FORM HANDLERS
+    document.getElementById('form-login-admin')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('admin-email').value;
+      const pass = document.getElementById('admin-password').value;
+
+      if (!IS_PREVIEW && auth) {
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          document.getElementById('modal-login').classList.add('hidden');
+        } catch (err) {
+          alert("Login Admin Gagal: " + err.message);
+        }
+      }
+    });
+
+    document.getElementById('form-login-member')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const memberId = document.getElementById('member-id').value;
+      const pass = document.getElementById('member-password').value;
+
+      const member = state.members.find(m => m.id === memberId && m.password === pass);
+      if (member) {
+        state.currentUser = {
+          id: member.id,
+          name: member.name,
+          role: member.role || 'siswa'
+        };
+        document.getElementById('modal-login').classList.add('hidden');
+        renderNavigation();
+        renderUserBadge();
+        window.switchView(member.role === 'admin' ? 'dashboard' : 'mybooks');
+      } else {
+        alert("ID Anggota atau Password Salah!");
+      }
+    });
+
+    document.getElementById('btn-logout')?.addEventListener('click', async () => {
+      if (!IS_PREVIEW && auth) {
+        await signOut(auth);
+      }
+      state.currentUser = null;
+      renderNavigation();
+      renderUserBadge();
+      window.switchView('dashboard');
+    });
+
+    document.getElementById('btn-open-login')?.addEventListener('click', () => {
+      document.getElementById('modal-login').classList.remove('hidden');
+    });
+
+    document.getElementById('btn-close-login')?.addEventListener('click', () => {
+      document.getElementById('modal-login').classList.add('hidden');
+    });
+
+    // Login Tab Switcher
+    document.getElementById('tab-login-admin')?.addEventListener('click', () => {
+      document.getElementById('tab-login-admin').className = "flex-1 py-1.5 text-xs font-semibold rounded-xl transition-all bg-white text-indigo-600 shadow-sm";
+      document.getElementById('tab-login-member').className = "flex-1 py-1.5 text-xs font-semibold rounded-xl text-slate-500 hover:text-slate-800 transition-all";
+      document.getElementById('form-login-admin').classList.remove('hidden');
+      document.getElementById('form-login-member').classList.add('hidden');
+    });
+
+    document.getElementById('tab-login-member')?.addEventListener('click', () => {
+      document.getElementById('tab-login-member').className = "flex-1 py-1.5 text-xs font-semibold rounded-xl transition-all bg-white text-indigo-600 shadow-sm";
+      document.getElementById('tab-login-admin').className = "flex-1 py-1.5 text-xs font-semibold rounded-xl text-slate-500 hover:text-slate-800 transition-all";
+      document.getElementById('form-login-member').classList.remove('hidden');
+      document.getElementById('form-login-admin').classList.add('hidden');
+    });
+
+    // PWA INSTALL PROMPT
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('btn-install-pwa');
+      if (installBtn) installBtn.classList.remove('hidden');
+    });
+
+    window.triggerPWAInstall = async function() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        document.getElementById('btn-install-pwa').classList.add('hidden');
+      }
+      deferredPrompt = null;
+    };
+
+    // REAL-TIME FIRESTORE SYNC LISTENERS
+    function initFirestoreSync() {
+      if (IS_PREVIEW || !db) return;
+
+      // 1. Sync Library Profile (Settings)
+      const profileDocRef = doc(db, 'settings', 'library_profile');
+      onSnapshot(profileDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          state.libraryProfile = docSnap.data();
+          const splashSchool = document.getElementById('splash-school-title');
+          const splashLib = document.getElementById('splash-lib-title');
+          if (splashSchool) splashSchool.textContent = state.libraryProfile.schoolName;
+          if (splashLib) splashLib.textContent = state.libraryProfile.libraryName;
+        } else {
+          setDoc(profileDocRef, state.libraryProfile);
+        }
+        if (state.activeMenu === 'dashboard') renderDashboard();
+      });
+
+      // 2. Sync Books Collection
+      onSnapshot(collection(db, 'books'), (snapshot) => {
+        state.books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (state.activeMenu === 'books' || state.activeMenu === 'dashboard') {
+          if (state.activeMenu === 'books') renderBooks();
+          if (state.activeMenu === 'dashboard') renderDashboard();
+        }
+      });
+
+      // 3. Sync Members Collection
+      onSnapshot(collection(db, 'members'), (snapshot) => {
+        state.members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (state.activeMenu === 'members' || state.activeMenu === 'dashboard') {
+          if (state.activeMenu === 'members') renderMembers();
+          if (state.activeMenu === 'dashboard') renderDashboard();
+        }
+      });
+
+      // 4. Sync Transactions Collection
+      onSnapshot(collection(db, 'transactions'), (snapshot) => {
+        state.transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (state.activeMenu === 'circulation' || state.activeMenu === 'mybooks' || state.activeMenu === 'reports') {
+          window.switchView(state.activeMenu);
+        }
+      });
+    }
 
     // REAL-TIME CLOCK HANDLER
     function startRealtimeClock() {
@@ -455,14 +544,12 @@
 
         clearBtn.classList.remove('hidden');
 
-        // Filter Books
         const matchedBooks = state.books.filter(b => 
           (b.title && b.title.toLowerCase().includes(query)) ||
           (b.author && b.author.toLowerCase().includes(query)) ||
           (b.isbn && b.isbn.toLowerCase().includes(query))
         );
 
-        // Filter Members
         const matchedMembers = state.members.filter(m => 
           (m.name && m.name.toLowerCase().includes(query)) ||
           (m.id && m.id.toLowerCase().includes(query))
@@ -472,7 +559,6 @@
           dropdown.innerHTML = `<div class="p-3 text-xs text-slate-400 text-center">Tidak ditemukan hasil untuk "${query}"</div>`;
         } else {
           let html = '';
-
           if (matchedBooks.length > 0) {
             html += `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 py-1 bg-slate-50 rounded-lg mb-1">Buku (${matchedBooks.length})</div>`;
             html += matchedBooks.map(b => `
@@ -498,10 +584,8 @@
               </div>
             `).join('');
           }
-
           dropdown.innerHTML = html;
         }
-
         dropdown.classList.remove('hidden');
       });
 
@@ -511,7 +595,6 @@
         clearBtn.classList.add('hidden');
       });
 
-      // Close dropdown when click outside
       document.addEventListener('click', (e) => {
         if (!input.contains(e.target) && !dropdown.contains(e.target)) {
           dropdown.classList.add('hidden');
@@ -540,7 +623,6 @@
       const role = state.currentUser ? state.currentUser.role : 'guest';
       const filteredMenus = menuItems.filter(item => item.roles.includes(role));
 
-      // Desktop Nav
       const desktopNav = document.getElementById('desktop-nav');
       desktopNav.innerHTML = filteredMenus.map(m => `
         <button onclick="window.switchView('${m.id}')" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all ${state.activeMenu === m.id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}">
@@ -549,7 +631,6 @@
         </button>
       `).join('');
 
-      // Mobile Nav
       const mobileNav = document.getElementById('mobile-nav');
       mobileNav.innerHTML = filteredMenus.map(m => `
         <button onclick="window.switchView('${m.id}')" class="flex flex-col items-center gap-1 p-2 rounded-xl text-[10px] font-medium ${state.activeMenu === m.id ? 'text-indigo-600' : 'text-slate-400'}">
@@ -558,7 +639,6 @@
         </button>
       `).join('');
 
-      // Toggle Settings Button for Admin
       const settingsBtn = document.getElementById('admin-settings-btn-container');
       if (role === 'admin') {
         settingsBtn.classList.remove('hidden');
@@ -617,16 +697,13 @@
       const totalBorrowed = state.transactions.filter(t => t.status === 'dipinjam' || t.status === 'terlambat').length;
       const totalMembers = state.members.length;
 
-      // Random kata motivasi
       const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
       view.innerHTML = `
-        <!-- Hero Banner with Live Clock & Quotes -->
         <div class="bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 rounded-3xl p-6 sm:p-8 text-white shadow-lg shadow-indigo-100 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
           <div class="space-y-3 z-10 max-w-xl">
             <div class="flex flex-wrap items-center gap-2">
               <span class="bg-white/20 backdrop-blur-md text-white text-[10px] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">${state.libraryProfile.libraryName}</span>
-              <!-- Widget Hari, Tanggal, & Jam -->
               <span class="bg-amber-400 text-indigo-950 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="clock" class="w-3 h-3"></i>
                 <span id="live-date-str">-</span> • <span id="live-time-str">00:00:00 WIB</span>
@@ -636,7 +713,6 @@
             <h3 class="text-xl sm:text-2xl font-extrabold leading-tight">Selamat Datang di ${state.libraryProfile.schoolName}!</h3>
             <p class="text-xs text-indigo-100 leading-relaxed">${state.libraryProfile.address}</p>
 
-            <!-- Kata Motivasi Membaca -->
             <div class="bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-xs italic text-amber-200 flex items-center gap-2.5">
               <i data-lucide="sparkles" class="w-4 h-4 shrink-0 text-amber-300"></i>
               <span>${randomQuote}</span>
@@ -648,7 +724,6 @@
           </div>
         </div>
 
-        <!-- Metric Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
@@ -692,7 +767,6 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <p class="text-xs text-slate-500">Katalog koleksi buku & E-Book digital perpustakaan.</p>
-            <!-- Switcher Tampilan Grid / Table -->
             <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
               <button onclick="window.setBookViewMode('grid')" class="px-2.5 py-1 rounded-xl text-xs font-semibold transition-all ${state.bookViewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}" title="Tampilan Grid Kartu">
                 <i data-lucide="grid" class="w-3.5 h-3.5"></i>
@@ -719,7 +793,6 @@
           ` : ''}
         </div>
 
-        <!-- Render Berdasarkan View Mode (Grid vs Table) -->
         ${state.bookViewMode === 'grid' ? renderBookGrid(isAdmin) : renderBookTable(isAdmin)}
       `;
       lucide.createIcons();
@@ -731,12 +804,14 @@
     };
 
     function renderBookGrid(isAdmin) {
+      if (state.books.length === 0) {
+        return `<div class="bg-white rounded-3xl p-12 text-center text-slate-400 text-xs">Belum ada data buku tersimpan. Silakan tambah atau import buku.</div>`;
+      }
       return `
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           ${state.books.map((b) => `
             <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-all relative group">
               <div>
-                <!-- Cover Buku Minimalis 3D Gradient -->
                 <div class="w-full h-44 rounded-2xl bg-gradient-to-br ${b.coverColor || 'from-indigo-500 to-purple-600'} p-4 text-white flex flex-col justify-between shadow-inner relative overflow-hidden mb-3">
                   <div class="flex items-center justify-between z-10">
                     <span class="text-[9px] font-bold uppercase tracking-wider bg-black/20 backdrop-blur-md px-2 py-0.5 rounded-full">${b.category || 'Buku'}</span>
@@ -750,7 +825,6 @@
                   </div>
                 </div>
 
-                <!-- Detail Buku -->
                 <div class="space-y-1.5 text-xs mb-3">
                   <p class="text-slate-500 text-[11px] line-clamp-2">${b.summary || 'Tidak ada ringkasan.'}</p>
                   <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
@@ -760,7 +834,6 @@
                 </div>
               </div>
 
-              <!-- Footer Actions -->
               <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
                 ${b.pdfUrl ? `
                   <button onclick="window.openPdfViewer('${b.id}')" class="px-3 py-1.5 rounded-xl text-[10px] font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200/60 flex items-center gap-1">
@@ -781,6 +854,9 @@
     }
 
     function renderBookTable(isAdmin) {
+      if (state.books.length === 0) {
+        return `<div class="bg-white rounded-3xl p-12 text-center text-slate-400 text-xs">Belum ada data buku tersimpan.</div>`;
+      }
       return `
         <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
@@ -898,7 +974,7 @@
                       </span>
                     </td>
                     <td class="p-3 text-right">
-                      <button onclick="window.returnBook('${t.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-xl text-[11px] font-semibold">
+                      <button onclick="window.returnBook('${t.id}', '${t.bookId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-xl text-[11px] font-semibold">
                         Kembalikan
                       </button>
                     </td>
@@ -910,7 +986,7 @@
         </div>
       `;
 
-      document.getElementById('form-add-circulation')?.addEventListener('submit', (e) => {
+      document.getElementById('form-add-circulation')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const memberId = document.getElementById('circ-member').value;
         const bookId = document.getElementById('circ-book').value;
@@ -918,12 +994,11 @@
         const member = state.members.find(m => m.id === memberId);
         const book = state.books.find(b => b.id === bookId);
 
-        if (member && book) {
+        if (member && book && db) {
           const today = new Date().toISOString().split('T')[0];
           const due = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
           
-          state.transactions.push({
-            id: 't' + Date.now(),
+          await addDoc(collection(db, 'transactions'), {
             memberId: member.id,
             memberName: member.name,
             bookId: book.id,
@@ -934,8 +1009,9 @@
             fine: 0
           });
 
-          book.available -= 1;
-          renderCirculation();
+          await updateDoc(doc(db, 'books', book.id), {
+            available: Number(book.available) - 1
+          });
         }
       });
     }
@@ -1079,18 +1155,17 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        if (jsonData.length > 0) {
-          const importedBooks = jsonData.map((item, idx) => {
+        if (jsonData.length > 0 && db) {
+          for (let [idx, item] of jsonData.entries()) {
             const stockVal = Number(item["stok"] || item["jumlah"] || 5);
-            return {
-              id: 'b_' + Date.now() + '_' + idx,
+            await addDoc(collection(db, 'books'), {
               no: item["nomor"] || item["no"] || idx + 1,
               title: item["judul"] || item["Judul"] || "Tanpa Judul",
               author: item["penulis/pengarang"] || item["penulis"] || item["pengarang"] || "-",
@@ -1106,12 +1181,9 @@
               stock: stockVal,
               available: stockVal,
               coverColor: 'from-indigo-500 to-purple-600'
-            };
-          });
-
-          state.books = [...state.books, ...importedBooks];
-          renderBooks();
-          alert(`Berhasil mengimpor ${importedBooks.length} data buku!`);
+            });
+          }
+          alert(`Berhasil mengimpor data buku ke Firestore!`);
         }
       };
       reader.readAsArrayBuffer(file);
@@ -1138,28 +1210,27 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        if (jsonData.length > 0) {
-          const importedMembers = jsonData.map((item, idx) => ({
-            no: item["no"] || item["nomor"] || idx + 1,
-            name: item["nama"] || "Anggota Tanpa Nama",
-            id: String(item["no anggota"] || item["id"] || ('100' + (idx + 10))),
-            status: item["status"] || "aktif",
-            class: item["kelas"] || "-",
-            address: item["alamat"] || "-",
-            role: "siswa",
-            password: "123"
-          }));
-
-          state.members = [...state.members, ...importedMembers];
-          renderMembers();
-          alert(`Berhasil mengimpor ${importedMembers.length} data anggota!`);
+        if (jsonData.length > 0 && db) {
+          for (let [idx, item] of jsonData.entries()) {
+            await addDoc(collection(db, 'members'), {
+              no: item["no"] || item["nomor"] || idx + 1,
+              name: item["nama"] || "Anggota Tanpa Nama",
+              id: String(item["no anggota"] || item["id"] || ('100' + (idx + 10))),
+              status: item["status"] || "aktif",
+              class: item["kelas"] || "-",
+              address: item["alamat"] || "-",
+              role: "siswa",
+              password: "123"
+            });
+          }
+          alert(`Berhasil mengimpor data anggota ke Firestore!`);
         }
       };
       reader.readAsArrayBuffer(file);
@@ -1175,8 +1246,6 @@
       printArea.innerHTML = `
         <div class="p-8 flex justify-center">
           <div class="w-[350px] h-[220px] bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white rounded-2xl p-4 shadow-xl relative overflow-hidden flex flex-col justify-between border-2 border-indigo-400">
-            
-            <!-- Header Kartu -->
             <div class="flex items-center justify-between border-b border-indigo-400/40 pb-2">
               <div>
                 <h3 class="text-[11px] font-black uppercase tracking-wider leading-tight">${state.libraryProfile.schoolName}</h3>
@@ -1187,7 +1256,6 @@
               </div>
             </div>
 
-            <!-- Body Kartu -->
             <div class="flex items-center gap-3 my-auto">
               <div class="w-14 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white text-2xl font-bold border border-white/30">
                 ${member.name.charAt(0)}
@@ -1200,7 +1268,6 @@
               </div>
             </div>
 
-            <!-- Footer Kartu & Barcode Visual -->
             <div class="flex items-end justify-between border-t border-indigo-400/40 pt-2 text-[8px] text-indigo-200">
               <div>
                 <p class="font-mono text-white text-[10px] tracking-widest font-bold">|||||| ||| ||||| |||</p>
@@ -1211,11 +1278,9 @@
                 <p class="text-[7px] italic text-indigo-300">Harap membawa kartu saat berkunjung</p>
               </div>
             </div>
-
           </div>
         </div>
       `;
-
       window.print();
     };
 
@@ -1258,22 +1323,25 @@
         </form>
       `;
 
-      document.getElementById('form-update-profile').addEventListener('submit', (e) => {
+      document.getElementById('form-update-profile').addEventListener('submit', async (e) => {
         e.preventDefault();
-        state.libraryProfile = {
+        const newProfile = {
           schoolName: document.getElementById('set-school').value,
           libraryName: document.getElementById('set-lib').value,
           address: document.getElementById('set-addr').value,
           headmaster: document.getElementById('set-head').value,
           nip: document.getElementById('set-nip').value
         };
+
+        if (db) {
+          await setDoc(doc(db, 'settings', 'library_profile'), newProfile);
+        }
         modal.classList.add('hidden');
-        renderDashboard();
-        alert('Identitas Perpustakaan Berhasil Diperbarui!');
+        alert('Identitas Perpustakaan Berhasil Disimpan ke Cloud Firestore!');
       });
     };
 
-    // --- PDF READER & CAMERA BARCODE SCANNER HANDLERS ---
+    // --- PDF READER & CAMERA BARCODE SCANNER ---
 
     window.openPdfViewer = function(bookId) {
       const book = state.books.find(b => b.id === bookId);
@@ -1304,10 +1372,7 @@
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 150 } },
         (decodedText) => {
-          // Callback sukses scan
           window.closeBarcodeScanner();
-          
-          // Coba cari apakah teks hasil scan cocok dengan ISBN/ID Buku atau ID Anggota
           const matchedBook = state.books.find(b => b.isbn === decodedText || b.id === decodedText);
           const matchedMember = state.members.find(m => m.id === decodedText);
 
@@ -1320,10 +1385,10 @@
             if (selectMember) selectMember.value = matchedMember.id;
             alert(`Anggota Terdeteksi: "${matchedMember.name}"`);
           } else {
-            alert(`Hasil Barcode: ${decodedText}\n(Tidak cocok dengan data ISBN/Nomor Anggota terdaftar)`);
+            alert(`Hasil Barcode: ${decodedText}`);
           }
         },
-        () => {} // error callback diabaikan
+        () => {}
       ).catch(err => {
         alert("Gagal mengakses kamera: " + err);
         window.closeBarcodeScanner();
@@ -1342,15 +1407,15 @@
       }
     };
 
-    // --- ACTIONS & MODAL HELPERS ---
+    // --- FIRESTORE ACTIONS ---
 
-    window.returnBook = function(transId) {
-      const trans = state.transactions.find(t => t.id === transId);
-      if (trans) {
-        trans.status = 'dikembalikan';
-        const book = state.books.find(b => b.id === trans.bookId);
-        if (book) book.available += 1;
-        renderCirculation();
+    window.returnBook = async function(transId, bookId) {
+      if (db) {
+        await updateDoc(doc(db, 'transactions', transId), { status: 'dikembalikan' });
+        const book = state.books.find(b => b.id === bookId);
+        if (book) {
+          await updateDoc(doc(db, 'books', bookId), { available: Number(book.available) + 1 });
+        }
       }
     };
 
@@ -1389,36 +1454,37 @@
         </form>
       `;
 
-      document.getElementById('form-create-book').addEventListener('submit', (e) => {
+      document.getElementById('form-create-book').addEventListener('submit', async (e) => {
         e.preventDefault();
         const stock = Number(document.getElementById('add-stock').value);
-        state.books.push({
-          id: 'b' + Date.now(),
-          no: state.books.length + 1,
-          title: document.getElementById('add-title').value,
-          author: document.getElementById('add-author').value,
-          publisher: document.getElementById('add-publisher').value,
-          city: document.getElementById('add-city').value,
-          year: document.getElementById('add-year').value,
-          pages: Number(document.getElementById('add-pages').value || 0),
-          isbn: document.getElementById('add-isbn').value,
-          callNumber: document.getElementById('add-call').value,
-          pdfUrl: document.getElementById('add-pdf-url').value || '',
-          summary: document.getElementById('add-summary').value,
-          price: Number(document.getElementById('add-price').value || 0),
-          category: 'Umum',
-          stock: stock,
-          available: stock,
-          coverColor: 'from-purple-500 to-indigo-600'
-        });
+        if (db) {
+          await addDoc(collection(db, 'books'), {
+            no: state.books.length + 1,
+            title: document.getElementById('add-title').value,
+            author: document.getElementById('add-author').value,
+            publisher: document.getElementById('add-publisher').value,
+            city: document.getElementById('add-city').value,
+            year: document.getElementById('add-year').value,
+            pages: Number(document.getElementById('add-pages').value || 0),
+            isbn: document.getElementById('add-isbn').value,
+            callNumber: document.getElementById('add-call').value,
+            pdfUrl: document.getElementById('add-pdf-url').value || '',
+            summary: document.getElementById('add-summary').value,
+            price: Number(document.getElementById('add-price').value || 0),
+            category: 'Umum',
+            stock: stock,
+            available: stock,
+            coverColor: 'from-purple-500 to-indigo-600'
+          });
+        }
         modal.classList.add('hidden');
-        renderBooks();
       });
     };
 
-    window.deleteBook = function(id) {
-      state.books = state.books.filter(b => b.id !== id);
-      renderBooks();
+    window.deleteBook = async function(id) {
+      if (db) {
+        await deleteDoc(doc(db, 'books', id));
+      }
     };
 
     window.openAddMemberModal = function() {
@@ -1447,160 +1513,35 @@
         </form>
       `;
 
-      document.getElementById('form-create-member').addEventListener('submit', (e) => {
+      document.getElementById('form-create-member').addEventListener('submit', async (e) => {
         e.preventDefault();
-        state.members.push({
-          no: state.members.length + 1,
-          name: document.getElementById('m-name').value,
-          id: document.getElementById('m-id').value,
-          status: document.getElementById('m-status').value,
-          class: document.getElementById('m-class').value,
-          address: document.getElementById('m-address').value,
-          role: 'siswa',
-          password: document.getElementById('m-pass').value
-        });
-        modal.classList.add('hidden');
-        renderMembers();
-      });
-    };
-
-    window.deleteMember = function(id) {
-      state.members = state.members.filter(m => m.id !== id);
-      renderMembers();
-    };
-
-    // --- AUTHENTICATION LISTENERS & HANDLERS ---
-
-    document.getElementById('btn-open-login').addEventListener('click', () => {
-      document.getElementById('modal-login').classList.remove('hidden');
-    });
-
-    document.getElementById('btn-close-login').addEventListener('click', () => {
-      document.getElementById('modal-login').classList.add('hidden');
-    });
-
-    document.getElementById('tab-login-admin').addEventListener('click', (e) => {
-      e.target.className = 'flex-1 py-1.5 text-xs font-semibold rounded-xl transition-all bg-white text-indigo-600 shadow-sm';
-      document.getElementById('tab-login-member').className = 'flex-1 py-1.5 text-xs font-semibold rounded-xl text-slate-500 transition-all';
-      document.getElementById('form-login-admin').classList.remove('hidden');
-      document.getElementById('form-login-member').classList.add('hidden');
-    });
-
-    document.getElementById('tab-login-member').addEventListener('click', (e) => {
-      e.target.className = 'flex-1 py-1.5 text-xs font-semibold rounded-xl transition-all bg-white text-indigo-600 shadow-sm';
-      document.getElementById('tab-login-admin').className = 'flex-1 py-1.5 text-xs font-semibold rounded-xl text-slate-500 transition-all';
-      document.getElementById('form-login-member').classList.remove('hidden');
-      document.getElementById('form-login-admin').classList.add('hidden');
-    });
-
-    document.getElementById('form-login-admin').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('admin-email').value;
-      const pass = document.getElementById('admin-password').value;
-
-      if (IS_PREVIEW) {
-        if (email === 'admin@sekolah.sch.id' && pass === 'admin123') {
-          state.currentUser = { role: 'admin', name: 'Administrator Lib', id: 'admin-1' };
-          document.getElementById('modal-login').classList.add('hidden');
-          renderUserBadge();
-          window.switchView('dashboard');
-        } else {
-          alert('Kredensial Admin Demo Salah!');
-        }
-      } else {
-        try {
-          const userCred = await signInWithEmailAndPassword(auth, email, pass);
-          state.currentUser = { role: 'admin', name: email.split('@')[0], id: userCred.user.uid };
-          document.getElementById('modal-login').classList.add('hidden');
-          renderUserBadge();
-          window.switchView('dashboard');
-        } catch (err) {
-          alert('Login Gagal: ' + err.message);
-        }
-      }
-    });
-
-    document.getElementById('form-login-member').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const id = document.getElementById('member-id').value;
-      const pass = document.getElementById('member-password').value;
-
-      const found = state.members.find(m => m.id === id && m.password === pass);
-      if (found) {
-        state.currentUser = { role: found.role, name: found.name, id: found.id };
-        document.getElementById('modal-login').classList.add('hidden');
-        renderUserBadge();
-        window.switchView('dashboard');
-      } else {
-        alert('ID Anggota atau Password salah!');
-      }
-    });
-
-    document.getElementById('btn-logout').addEventListener('click', () => {
-      state.currentUser = null;
-      renderUserBadge();
-      window.switchView('dashboard');
-    });
-
-    // --- INITIALIZATION ---
-    window.addEventListener('DOMContentLoaded', () => {
-      // Register Service Worker for PWA
-      if ('serviceWorker' in navigator) {
-        const swCode = `
-          self.addEventListener('install', (e) => self.skipWaiting());
-          self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
-          self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-        `;
-        const blob = new Blob([swCode], { type: 'text/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-      }
-
-      // Handle PWA Install Prompt
-      let deferredPrompt;
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        const installBtn = document.getElementById('btn-install-pwa');
-        if (installBtn) installBtn.classList.remove('hidden');
-      });
-
-      window.triggerPWAInstall = function() {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then(() => {
-            deferredPrompt = null;
-            document.getElementById('btn-install-pwa')?.classList.add('hidden');
+        if (db) {
+          await addDoc(collection(db, 'members'), {
+            no: state.members.length + 1,
+            name: document.getElementById('m-name').value,
+            id: document.getElementById('m-id').value,
+            status: document.getElementById('m-status').value,
+            class: document.getElementById('m-class').value,
+            address: document.getElementById('m-address').value,
+            role: 'siswa',
+            password: document.getElementById('m-pass').value
           });
         }
-      };
+        modal.classList.add('hidden');
+      });
+    };
 
-      // Splash Screen Animation Handler
-      const splashScreen = document.getElementById('splash-screen');
-      const splashSchool = document.getElementById('splash-school-title');
-      const splashLib = document.getElementById('splash-lib-title');
-      if (splashSchool && state.libraryProfile) {
-        splashSchool.textContent = state.libraryProfile.schoolName;
-        splashLib.textContent = state.libraryProfile.libraryName;
+    window.deleteMember = async function(id) {
+      if (db) {
+        await deleteDoc(doc(db, 'members', id));
       }
+    };
 
-      setTimeout(() => {
-        if (splashScreen) {
-          splashScreen.classList.add('opacity-0');
-          setTimeout(() => {
-            splashScreen.classList.add('hidden');
-          }, 500);
-        }
-      }, 1800);
-
-      if (IS_PREVIEW) {
-        document.getElementById('preview-banner').classList.remove('hidden');
-      }
-
-      initGlobalSearch();
-      renderNavigation();
-      renderUserBadge();
-      window.switchView('dashboard');
-    });
+    // Initialize App
+    initFirestoreSync();
+    renderNavigation();
+    renderUserBadge();
+    initGlobalSearch();
   </script>
 </body>
 </html>
