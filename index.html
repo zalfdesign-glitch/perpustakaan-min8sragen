@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perpustakaan Digital Sekolah / Madrasah</title>
   
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBlcnB1c3Rha2FhbiBTZWtvbGFoIiwKICAic2hvcnRfbmFtZSI6ICJCYWNhTGliIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNGOEY5RkUiLAogICJ0aGVtZV9jb2xvciI6ICIjNjM2NkYxIgp9">
+  <!-- PWA Manifest & App Icon -->
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBlcnB1c3Rha2FhbiBNSU4gOCBTcmFnZW4iLAogICJzaG9ydF9uYW1lIjogIkUtUGVycHVzIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNGOEY5RkUiLAogICJ0aGVtZV9jb2xvciI6ICIjNjM2NkYxIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9wbGFjZWhvbGQuY28vNTEyeDUxMi82MzY2RjEvZmZmP3RleHQ9UEwiLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
+  <meta name="theme-color" content="#6366F1">
+  <link rel="apple-touch-icon" href="https://placehold.co/192x192/6366F1/fff?text=PL">
   
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,6 +18,8 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- HTML5 QR / Barcode Scanner Library -->
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <!-- JsBarcode for Book Labels -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
@@ -32,23 +37,27 @@
     }
     @media print {
       body * {
-        visibility: hidden;
+        visibility: hidden !important;
       }
       #print-area, #print-area * {
-        visibility: visible;
+        visibility: visible !important;
       }
       #print-area {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
       }
     }
   </style>
 </head>
 <body class="text-slate-700 antialiased selection:bg-indigo-500 selection:text-white min-h-screen">
 
-  <!-- Area khusus untuk cetak kartu -->
+  <!-- Area khusus untuk cetak kartu (Print Area) -->
   <div id="print-area" class="hidden"></div>
 
   <!-- App Shell Container -->
@@ -63,8 +72,8 @@
             <i data-lucide="book-open-check" class="w-6 h-6"></i>
           </div>
           <div>
-            <h1 class="font-extrabold text-slate-800 text-lg leading-tight">PustakaDigital</h1>
-            <p class="text-[11px] text-slate-400 font-medium">Sekolah / Madrasah</p>
+            <h1 id="sidebar-lib-title" class="font-extrabold text-slate-800 text-sm leading-tight">Punjering Kaweruh</h1>
+            <p id="sidebar-school-title" class="text-[11px] text-slate-400 font-medium">MIN 8 Sragen</p>
           </div>
         </div>
 
@@ -113,22 +122,11 @@
     <!-- Main Content Area -->
     <main class="flex-1 md:ml-64 p-4 md:p-8 mb-20 md:mb-0">
       
-      <!-- Top Banner Preview Mode (hanya saat IS_PREVIEW = true) -->
-      <div id="preview-banner" class="hidden mb-6 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-3 rounded-2xl shadow-sm flex items-center justify-between">
-        <div class="flex items-center gap-2 text-xs font-medium">
-          <i data-lucide="alert-circle" class="w-4 h-4"></i>
-          <span><strong>Mode Preview Aktif:</strong> Berjalan dalam memori sementara (Data dummy). Ubah <code class="bg-amber-600 px-1 rounded">IS_PREVIEW = false</code> saat deployment.</span>
-        </div>
-        <div class="text-[11px] bg-white/20 px-2.5 py-1 rounded-full font-semibold">
-          Demo Admin: admin@sekolah.sch.id (Pass: admin123)
-        </div>
-      </div>
-
       <!-- Top Header -->
       <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h2 class="text-2xl font-bold text-slate-800" id="page-title">Dashboard Utama</h2>
-          <p class="text-xs text-slate-500" id="page-subtitle">Selamat datang di Sistem Informasi Perpustakaan</p>
+          <p class="text-xs text-slate-500" id="page-subtitle">Sistem Informasi Perpustakaan Digital</p>
         </div>
 
         <div class="flex items-center gap-3">
@@ -309,7 +307,8 @@
         libraryName: 'Perpustakaan Punjering Kaweruh',
         address: 'Jl. Raya Sragen KM. 8, Sragen',
         headmaster: 'Drs. H. Ahmad Fauzi, M.Pd.I',
-        nip: '19700512 199803 1 005'
+        nip: '19700512 199803 1 005',
+        finePerDay: 500
       },
       books: [],
       members: [],
@@ -442,10 +441,10 @@
       onSnapshot(profileDocRef, (docSnap) => {
         if (docSnap.exists()) {
           state.libraryProfile = docSnap.data();
-          const splashSchool = document.getElementById('splash-school-title');
-          const splashLib = document.getElementById('splash-lib-title');
-          if (splashSchool) splashSchool.textContent = state.libraryProfile.schoolName;
-          if (splashLib) splashLib.textContent = state.libraryProfile.libraryName;
+          const schoolEl = document.getElementById('sidebar-school-title');
+          const libEl = document.getElementById('sidebar-lib-title');
+          if (schoolEl) schoolEl.textContent = state.libraryProfile.schoolName;
+          if (libEl) libEl.textContent = state.libraryProfile.libraryName;
         } else {
           setDoc(profileDocRef, state.libraryProfile);
         }
@@ -813,7 +812,7 @@
                   <p class="text-slate-500 text-[11px] line-clamp-2">${b.summary || 'Tidak ada ringkasan.'}</p>
                   <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
                     <span>Call: <strong class="text-indigo-600">${b.callNumber || '-'}</strong></span>
-                    <span>ISBN: ${b.isbn || '-'}</span>
+                    <span>Eksemplar: <strong class="text-slate-700">${b.copies || b.stock || 1}</strong></span>
                   </div>
                 </div>
               </div>
@@ -853,8 +852,9 @@
                   <th class="p-3">Penerbit & Kota</th>
                   <th class="p-3">Tahun / Hal.</th>
                   <th class="p-3">ISBN / Call No</th>
+                  <th class="p-3">Eksemplar</th>
                   <th class="p-3">Versi Digital</th>
-                  <th class="p-3">Stok</th>
+                  <th class="p-3">Stok Sisa</th>
                   ${isAdmin ? `<th class="p-3 text-right">Aksi</th>` : ''}
                 </tr>
               </thead>
@@ -870,6 +870,7 @@
                     <td class="p-3 text-slate-600">${b.publisher || '-'} (${b.city || '-'})</td>
                     <td class="p-3 text-slate-600">${b.year || '-'} / ${b.pages || 0} hal.</td>
                     <td class="p-3 font-mono text-[11px] text-slate-500">${b.isbn || '-'}<br><span class="text-indigo-600">${b.callNumber || '-'}</span></td>
+                    <td class="p-3 font-semibold text-slate-700">${b.copies || b.stock || 1} eks.</td>
                     <td class="p-3">
                       ${b.pdfUrl ? `
                         <button onclick="window.openPdfViewer('${b.id}')" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200/60 flex items-center gap-1">
@@ -879,12 +880,15 @@
                     </td>
                     <td class="p-3">
                       <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${b.available > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
-                        ${b.available}/${b.stock}
+                        ${b.available}/${b.stock || b.copies || 1}
                       </span>
                     </td>
                     ${isAdmin ? `
-                      <td class="p-3 text-right">
-                        <button onclick="window.deleteBook('${b.id}')" class="text-rose-500 hover:text-rose-700 p-1">
+                      <td class="p-3 text-right flex items-center justify-end gap-1">
+                        <button onclick="window.printBookLabel('${b.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Label & Barcode">
+                          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="window.deleteBook('${b.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-xl" title="Hapus">
                           <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                       </td>
@@ -941,29 +945,47 @@
                   <th class="p-3">Buku</th>
                   <th class="p-3">Tgl Pinjam</th>
                   <th class="p-3">Tenggat</th>
-                  <th class="p-3">Status</th>
+                  <th class="p-3">Status & Denda</th>
                   <th class="p-3 text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
-                ${state.transactions.filter(t => t.status !== 'dikembalikan').map(t => `
+                ${state.transactions.filter(t => t.status !== 'dikembalikan').map(t => {
+                  const todayDate = new Date();
+                  const dueDate = new Date(t.dueDate);
+                  let fineAmount = 0;
+                  let currentStatus = t.status;
+                  
+                  if (todayDate > dueDate) {
+                     const diffDays = Math.ceil((todayDate - dueDate) / (1000 * 60 * 60 * 24));
+                     fineAmount = diffDays * (state.libraryProfile.finePerDay || 500);
+                     currentStatus = 'terlambat';
+                  }
+                  
+                  return `
                   <tr>
                     <td class="p-3 font-semibold text-slate-800">${t.memberName}</td>
                     <td class="p-3">${t.bookTitle}</td>
                     <td class="p-3">${t.borrowDate}</td>
-                    <td class="p-3">${t.dueDate}</td>
+                    <td class="p-3 font-semibold ${currentStatus === 'terlambat' ? 'text-rose-600' : ''}">${t.dueDate}</td>
                     <td class="p-3">
-                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${t.status === 'terlambat' ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'}">
-                        ${t.status}
-                      </span>
+                      <div class="flex flex-col gap-1 items-start">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${currentStatus === 'terlambat' ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'} uppercase">
+                          ${currentStatus}
+                        </span>
+                        ${fineAmount > 0 ? `<span class="text-[10px] font-bold text-rose-600">Denda: Rp${fineAmount.toLocaleString()}</span>` : ''}
+                      </div>
                     </td>
-                    <td class="p-3 text-right">
-                      <button onclick="window.returnBook('${t.id}', '${t.bookId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-xl text-[11px] font-semibold">
-                        Kembalikan
+                    <td class="p-3 text-right flex items-center justify-end gap-1">
+                      <button onclick="window.printReceipt('${t.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Struk">
+                        <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <button onclick="window.returnBook('${t.id}', '${t.bookId}', ${fineAmount})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Kembali
                       </button>
                     </td>
                   </tr>
-                `).join('')}
+                `}).join('')}
               </tbody>
             </table>
           </div>
@@ -1047,7 +1069,13 @@
                     <button onclick="window.printMemberCard('${m.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold flex items-center gap-1" title="Cetak Kartu">
                       <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                     </button>
-                    <button onclick="window.deleteMember('${m.id}')" class="text-rose-500 hover:text-rose-700 p-1.5">
+                    <button onclick="window.printClearanceLetter('${m.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Bebas Pustaka">
+                      <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="window.openEditMemberModal('${m.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 rounded-xl text-xs font-semibold" title="Edit Anggota">
+                      <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="window.deleteMember('${m.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-xl bg-rose-50 hover:bg-rose-100" title="Hapus Anggota">
                       <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                   </td>
@@ -1055,6 +1083,7 @@
               `).join('')}
             </tbody>
           </table>
+          </div>
         </div>
       `;
       lucide.createIcons();
@@ -1094,8 +1123,15 @@
       const view = document.getElementById('view-reports');
       view.innerHTML = `
         <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-          <h4 class="text-sm font-bold text-slate-800 mb-2">Ringkasan Laporan Perpustakaan</h4>
-          <p class="text-xs text-slate-500 mb-6">Rekapitulasi aktivitas peminjaman dan denda.</p>
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h4 class="text-sm font-bold text-slate-800 mb-2">Ringkasan Laporan Perpustakaan</h4>
+              <p class="text-xs text-slate-500">Rekapitulasi aktivitas peminjaman dan denda.</p>
+            </div>
+            <button onclick="window.exportTransactionsExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-2xl text-xs font-semibold shadow-sm flex items-center gap-1.5 transition-all">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Export Rekap Excel
+            </button>
+          </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100">
@@ -1115,17 +1151,18 @@
 
     window.exportBooksExcel = function() {
       const exportData = state.books.map((b, idx) => ({
-        "nomor": b.no || idx + 1,
-        "judul": b.title || "",
-        "penulis/pengarang": b.author || "",
-        "penerbit": b.publisher || "",
-        "kota terbit": b.city || "",
-        "tahun terbit": b.year || "",
-        "jumlah halaman": b.pages || 0,
+        "No": b.no || idx + 1,
+        "Judul Buku": b.title || "",
+        "Pengarang": b.author || "",
+        "Penerbit": b.publisher || "",
+        "Kota Terbit": b.city || "",
+        "Tahun Terbit": b.year || "",
+        "Jumlah Halaman": b.pages || 0,
+        "Eksemplar": b.copies || b.stock || 1,
         "ISBN": b.isbn || "",
-        "call number": b.callNumber || "",
-        "isi singkat": b.summary || "",
-        "harga": b.price || 0
+        "Call Number": b.callNumber || "",
+        "Isi Singkat": b.summary || "",
+        "Harga": b.price || 0
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -1148,22 +1185,23 @@
 
         if (jsonData.length > 0 && db) {
           for (let [idx, item] of jsonData.entries()) {
-            const stockVal = Number(item["stok"] || item["jumlah"] || 5);
+            const copiesVal = Number(item["Eksemplar"] || item["eksemplar"] || item["stok"] || item["jumlah"] || 1);
             await addDoc(collection(db, 'books'), {
-              no: item["nomor"] || item["no"] || idx + 1,
-              title: item["judul"] || item["Judul"] || "Tanpa Judul",
-              author: item["penulis/pengarang"] || item["penulis"] || item["pengarang"] || "-",
-              publisher: item["penerbit"] || "-",
-              city: item["kota terbit"] || "-",
-              year: item["tahun terbit"] || "-",
-              pages: Number(item["jumlah halaman"] || 0),
+              no: item["No"] || item["nomor"] || item["no"] || idx + 1,
+              title: item["Judul Buku"] || item["judul"] || item["Judul"] || "Tanpa Judul",
+              author: item["Pengarang"] || item["penulis/pengarang"] || item["penulis"] || item["pengarang"] || "-",
+              publisher: item["Penerbit"] || item["penerbit"] || "-",
+              city: item["Kota Terbit"] || item["kota terbit"] || "-",
+              year: item["Tahun Terbit"] || item["tahun terbit"] || "-",
+              pages: Number(item["Jumlah Halaman"] || item["jumlah halaman"] || 0),
+              copies: copiesVal,
               isbn: item["ISBN"] || item["isbn"] || "-",
-              callNumber: item["call number"] || item["Call Number"] || "-",
-              summary: item["isi singkat"] || item["ringkasan"] || "-",
-              price: Number(item["harga"] || 0),
+              callNumber: item["Call Number"] || item["call number"] || "-",
+              summary: item["Isi Singkat"] || item["isi singkat"] || item["ringkasan"] || "-",
+              price: Number(item["Harga"] || item["harga"] || 0),
               category: 'Umum',
-              stock: stockVal,
-              available: stockVal,
+              stock: copiesVal,
+              available: copiesVal,
               coverColor: 'from-indigo-500 to-purple-600'
             });
           }
@@ -1175,12 +1213,12 @@
 
     window.exportMembersExcel = function() {
       const exportData = state.members.map((m, idx) => ({
-        "no": m.no || idx + 1,
-        "nama": m.name || "",
-        "no anggota": m.id || "",
-        "status": m.status || "aktif",
-        "kelas": m.class || "",
-        "alamat": m.address || ""
+        "No": m.no || idx + 1,
+        "Nama": m.name || "",
+        "No Anggota": m.id || "",
+        "Status": m.status || "aktif",
+        "Kelas": m.class || "",
+        "Alamat": m.address || ""
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -1189,38 +1227,27 @@
       XLSX.writeFile(workbook, "Data_Anggota_Perpustakaan.xlsx");
     };
 
-    window.importMembersExcel = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+    window.exportTransactionsExcel = function() {
+      const exportData = state.transactions.map((t, idx) => ({
+        "No": idx + 1,
+        "ID Transaksi": t.id,
+        "Nama Peminjam": t.memberName || "",
+        "ID Anggota": t.memberId || "",
+        "Judul Buku": t.bookTitle || "",
+        "Tgl Pinjam": t.borrowDate || "",
+        "Tenggat": t.dueDate || "",
+        "Tgl Kembali": t.returnDate || "-",
+        "Status": t.status || "",
+        "Denda (Rp)": t.fine || 0
+      }));
 
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-        if (jsonData.length > 0 && db) {
-          for (let [idx, item] of jsonData.entries()) {
-            await addDoc(collection(db, 'members'), {
-              no: item["no"] || item["nomor"] || idx + 1,
-              name: item["nama"] || "Anggota Tanpa Nama",
-              id: String(item["no anggota"] || item["id"] || ('100' + (idx + 10))),
-              status: item["status"] || "aktif",
-              class: item["kelas"] || "-",
-              address: item["alamat"] || "-",
-              role: "siswa",
-              password: "123"
-            });
-          }
-          alert(`Berhasil mengimpor data anggota ke Firestore!`);
-        }
-      };
-      reader.readAsArrayBuffer(file);
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Sirkulasi");
+      XLSX.writeFile(workbook, "Laporan_Sirkulasi_Perpustakaan.xlsx");
     };
 
-    // --- CETAK KARTU PERPUSTAKAAN ---
+    // --- CETAK KARTU PERPUSTAKAAN (FIXED) ---
 
     window.printMemberCard = function(memberId) {
       const member = state.members.find(m => m.id === memberId);
@@ -1228,44 +1255,179 @@
 
       const printArea = document.getElementById('print-area');
       printArea.innerHTML = `
-        <div class="p-8 flex justify-center">
-          <div class="w-[350px] h-[220px] bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white rounded-2xl p-4 shadow-xl relative overflow-hidden flex flex-col justify-between border-2 border-indigo-400">
-            <div class="flex items-center justify-between border-b border-indigo-400/40 pb-2">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100vh;">
+          <div style="width: 350px; height: 220px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border-radius: 16px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid #818cf8; font-family: 'Plus Jakarta Sans', sans-serif;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 8px;">
               <div>
-                <h3 class="text-[11px] font-black uppercase tracking-wider leading-tight">${state.libraryProfile.schoolName}</h3>
-                <p class="text-[9px] text-indigo-200">${state.libraryProfile.libraryName}</p>
+                <h3 style="font-size: 11px; font-weight: 900; text-transform: uppercase; margin: 0; line-height: 1.2;">${state.libraryProfile.schoolName}</h3>
+                <p style="font-size: 9px; color: #c7d2fe; margin: 0;">${state.libraryProfile.libraryName}</p>
               </div>
-              <div class="w-7 h-7 bg-white text-indigo-600 rounded-lg flex items-center justify-center font-bold text-xs">
+              <div style="width: 28px; height: 28px; background: white; color: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">
                 📚
               </div>
             </div>
 
-            <div class="flex items-center gap-3 my-auto">
-              <div class="w-14 h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white text-2xl font-bold border border-white/30">
+            <div style="display: flex; align-items: center; gap: 12px; margin: auto 0;">
+              <div style="width: 50px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; border: 1px solid rgba(255,255,255,0.4);">
                 ${member.name.charAt(0)}
               </div>
-              <div class="text-xs space-y-0.5">
-                <p class="font-bold text-sm text-white">${member.name}</p>
-                <p class="text-[10px] text-indigo-200">No. Anggota: <span class="font-mono font-bold text-amber-300">${member.id}</span></p>
-                <p class="text-[10px] text-indigo-200">Kelas / Unit: ${member.class || '-'}</p>
-                <p class="text-[10px] text-indigo-200">Status: <span class="capitalize text-emerald-300">${member.status}</span></p>
+              <div style="font-size: 11px; line-height: 1.3;">
+                <p style="font-weight: bold; font-size: 13px; margin: 0; color: #ffffff;">${member.name}</p>
+                <p style="font-size: 10px; color: #e0e7ff; margin: 2px 0;">No. Anggota: <strong style="color: #fde047; font-family: monospace;">${member.id}</strong></p>
+                <p style="font-size: 10px; color: #e0e7ff; margin: 0;">Kelas / Unit: ${member.class || '-'}</p>
+                <p style="font-size: 10px; color: #e0e7ff; margin: 2px 0;">Status: <span style="color: #6ee7b7; font-weight: bold; text-transform: uppercase;">${member.status}</span></p>
               </div>
             </div>
 
-            <div class="flex items-end justify-between border-t border-indigo-400/40 pt-2 text-[8px] text-indigo-200">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 6px; font-size: 8px; color: #e0e7ff;">
               <div>
-                <p class="font-mono text-white text-[10px] tracking-widest font-bold">|||||| ||| ||||| |||</p>
-                <p>ID: ${member.id}</p>
+                <p style="font-family: monospace; font-size: 10px; font-weight: bold; margin: 0; letter-spacing: 2px;">|||||| ||| ||||| |||</p>
+                <p style="margin: 0;">ID: ${member.id}</p>
               </div>
-              <div class="text-right">
-                <p>Masa Berlaku: Selama Menjadi Anggota</p>
-                <p class="text-[7px] italic text-indigo-300">Harap membawa kartu saat berkunjung</p>
+              <div style="text-align: right;">
+                <p style="margin: 0;">Masa Berlaku: Selamanya</p>
+                <p style="font-size: 7px; color: #c7d2fe; margin: 0; font-style: italic;">Harap bawa kartu saat berkunjung</p>
               </div>
             </div>
           </div>
         </div>
       `;
+      printArea.classList.remove('hidden');
       window.print();
+      printArea.classList.add('hidden');
+    };
+
+    window.printClearanceLetter = function(memberId) {
+      const member = state.members.find(m => m.id === memberId);
+      if (!member) return;
+      
+      const activeBorrows = state.transactions.filter(t => t.memberId === memberId && t.status !== 'dikembalikan');
+      if (activeBorrows.length > 0) {
+        alert("Siswa masih memiliki tanggungan pinjaman buku! Harap kembalikan terlebih dahulu.");
+        return;
+      }
+
+      const printArea = document.getElementById('print-area');
+      const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+      
+      printArea.innerHTML = `
+        <div style="width: 100%; max-width: 700px; padding: 40px; font-family: 'Times New Roman', Times, serif; color: black; background: white; margin: 0 auto; box-sizing: border-box;">
+          <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 10px; margin-bottom: 20px;">
+            <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">KEMENTERIAN AGAMA REPUBLIK INDONESIA</h2>
+            <h1 style="margin: 5px 0; font-size: 22px; font-weight: bold; text-transform: uppercase;">${state.libraryProfile.schoolName}</h1>
+            <p style="margin: 0; font-size: 14px;">${state.libraryProfile.libraryName}</p>
+            <p style="margin: 0; font-size: 12px; font-style: italic;">${state.libraryProfile.address}</p>
+          </div>
+          
+          <h3 style="text-align: center; font-size: 16px; text-decoration: underline; margin-bottom: 30px;">SURAT KETERANGAN BEBAS PUSTAKA</h3>
+          
+          <p style="font-size: 14px; line-height: 1.5; margin-bottom: 15px;">Yang bertanda tangan di bawah ini, Kepala Perpustakaan ${state.libraryProfile.schoolName} menerangkan bahwa:</p>
+          
+          <table style="width: 80%; margin: 0 auto 20px auto; font-size: 14px; line-height: 1.8;">
+            <tr><td style="width: 30%;">Nama Lengkap</td><td>: <strong>${member.name}</strong></td></tr>
+            <tr><td>No. Anggota / NISN</td><td>: ${member.id}</td></tr>
+            <tr><td>Kelas / Unit</td><td>: ${member.class || '-'}</td></tr>
+          </table>
+          
+          <p style="font-size: 14px; line-height: 1.5; margin-bottom: 40px; text-align: justify;">
+            Berdasarkan data administrasi sirkulasi perpustakaan, nama tersebut di atas <strong>telah mengembalikan seluruh buku pinjaman</strong> dan tidak memiliki tanggungan denda administrasi perpustakaan. Surat Keterangan ini dapat dipergunakan sebagaimana mestinya (Syarat Kelulusan / Pindah Sekolah).
+          </p>
+          
+          <div style="width: 100%; display: flex; justify-content: flex-end;">
+            <div style="width: 300px; text-align: left; font-size: 14px;">
+              <p style="margin: 0 0 60px 0;">Sragen, ${today}<br>Kepala Perpustakaan,</p>
+              <p style="margin: 0; font-weight: bold; text-decoration: underline;">${state.libraryProfile.headmaster}</p>
+              <p style="margin: 0;">NIP. ${state.libraryProfile.nip}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      printArea.classList.remove('hidden');
+      window.print();
+      printArea.classList.add('hidden');
+    };
+
+    window.printBookLabel = function(bookId) {
+      const book = state.books.find(b => b.id === bookId);
+      if (!book) return;
+
+      const printArea = document.getElementById('print-area');
+      printArea.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100vh;">
+          <div style="width: 6cm; height: 4cm; border: 1px dashed black; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: sans-serif; background: white;">
+            <p style="font-size: 10px; font-weight: bold; margin: 0 0 5px 0; text-align: center;">${state.libraryProfile.libraryName}</p>
+            <div style="border: 2px solid black; padding: 5px 10px; margin-bottom: 5px; text-align: center; width: 100%; box-sizing: border-box;">
+              <p style="font-size: 16px; font-weight: bold; margin: 0;">${book.callNumber || '000'}</p>
+            </div>
+            <svg id="barcode-label"></svg>
+            <p style="font-size: 8px; margin: 5px 0 0 0; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${book.title}</p>
+          </div>
+        </div>
+      `;
+      
+      printArea.classList.remove('hidden');
+      JsBarcode("#barcode-label", book.isbn || book.id, {
+        format: "CODE128",
+        width: 1.5,
+        height: 30,
+        displayValue: true,
+        fontSize: 10,
+        margin: 0
+      });
+      setTimeout(() => {
+        window.print();
+        printArea.classList.add('hidden');
+      }, 100);
+    };
+
+    window.printReceipt = function(transId) {
+      const trans = state.transactions.find(t => t.id === transId);
+      if (!trans) return;
+
+      const todayDate = new Date();
+      const dueDate = new Date(trans.dueDate);
+      let fineAmount = trans.fine || 0;
+      if (trans.status !== 'dikembalikan' && todayDate > dueDate) {
+         const diffDays = Math.ceil((todayDate - dueDate) / (1000 * 60 * 60 * 24));
+         fineAmount = diffDays * (state.libraryProfile.finePerDay || 500);
+      }
+
+      const printArea = document.getElementById('print-area');
+      printArea.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100vh;">
+          <div style="width: 80mm; background: white; padding: 15px; font-family: monospace; color: black; border: 1px solid #ccc;">
+            <div style="text-align: center; border-bottom: 1px dashed black; padding-bottom: 10px; margin-bottom: 10px;">
+              <h2 style="margin: 0; font-size: 14px;">${state.libraryProfile.schoolName}</h2>
+              <h3 style="margin: 5px 0 0 0; font-size: 12px;">${state.libraryProfile.libraryName}</h3>
+              <p style="margin: 5px 0 0 0; font-size: 10px;">STRUK TRANSAKSI PERPUSTAKAAN</p>
+            </div>
+            <div style="font-size: 11px; line-height: 1.6; border-bottom: 1px dashed black; padding-bottom: 10px; margin-bottom: 10px;">
+              <p style="margin:0;">ID Trans : ${trans.id.substring(0,8)}</p>
+              <p style="margin:0;">Tanggal  : ${new Date().toLocaleDateString('id-ID')}</p>
+              <p style="margin:0;">Anggota  : ${trans.memberName}</p>
+              <p style="margin:0;">No. Angg : ${trans.memberId}</p>
+            </div>
+            <div style="font-size: 11px; line-height: 1.6; border-bottom: 1px dashed black; padding-bottom: 10px; margin-bottom: 10px;">
+              <p style="margin:0; font-weight: bold;">Buku :</p>
+              <p style="margin:0;">- ${trans.bookTitle}</p>
+              <p style="margin:5px 0 0 0;">Tgl Pinjam  : ${trans.borrowDate}</p>
+              <p style="margin:0;">Tenggat     : ${trans.dueDate}</p>
+              <p style="margin:0;">Tgl Kembali : ${trans.returnDate || '-'}</p>
+              <p style="margin:0;">Status      : <strong style="text-transform:uppercase">${trans.status}</strong></p>
+            </div>
+            <div style="font-size: 12px; text-align: right; font-weight: bold; margin-bottom: 20px;">
+              <p style="margin:0;">Total Denda : Rp ${fineAmount.toLocaleString()}</p>
+            </div>
+            <div style="text-align: center; font-size: 10px;">
+              <p style="margin:0;">Terima kasih atas kunjungannya!</p>
+              <p style="margin:0;">Harap simpan struk ini sebagai bukti.</p>
+            </div>
+          </div>
+        </div>
+      `;
+      printArea.classList.remove('hidden');
+      window.print();
+      printArea.classList.add('hidden');
     };
 
     // --- EDIT IDENTITAS PERPUSTAKAAN MODAL ---
@@ -1299,6 +1461,10 @@
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">NIP Kepala</label>
               <input type="text" id="set-nip" required value="${state.libraryProfile.nip}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
             </div>
+            <div class="col-span-2">
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Denda Keterlambatan per Hari (Rp)</label>
+              <input type="number" id="set-fine" required value="${state.libraryProfile.finePerDay || 500}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
             <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
@@ -1314,7 +1480,8 @@
           libraryName: document.getElementById('set-lib').value,
           address: document.getElementById('set-addr').value,
           headmaster: document.getElementById('set-head').value,
-          nip: document.getElementById('set-nip').value
+          nip: document.getElementById('set-nip').value,
+          finePerDay: Number(document.getElementById('set-fine').value)
         };
 
         if (db) {
@@ -1393,12 +1560,18 @@
 
     // --- FIRESTORE ACTIONS ---
 
-    window.returnBook = async function(transId, bookId) {
+    window.returnBook = async function(transId, bookId, fineAmount = 0) {
       if (db) {
-        await updateDoc(doc(db, 'transactions', transId), { status: 'dikembalikan' });
+        await updateDoc(doc(db, 'transactions', transId), { 
+          status: 'dikembalikan', 
+          returnDate: new Date().toISOString().split('T')[0],
+          fine: fineAmount 
+        });
         const book = state.books.find(b => b.id === bookId);
         if (book) {
-          await updateDoc(doc(db, 'books', bookId), { available: Number(book.available) + 1 });
+          const maxStock = Number(book.copies || book.stock || 1);
+          const currentAvail = Number(book.available ?? maxStock);
+          await updateDoc(doc(db, 'books', bookId), { available: Math.min(maxStock, currentAvail + 1) });
         }
       }
     };
@@ -1411,25 +1584,61 @@
       content.innerHTML = `
         <h4 class="text-sm font-bold text-slate-800 mb-4">Tambah Buku Baru</h4>
         <form id="form-create-book" class="space-y-3">
-          <input type="text" id="add-title" required placeholder="Judul Buku" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Judul Buku</label>
+            <input type="text" id="add-title" required placeholder="Judul Buku" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          </div>
           <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="add-author" required placeholder="Penulis/Pengarang" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-            <input type="text" id="add-publisher" required placeholder="Penerbit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Pengarang</label>
+              <input type="text" id="add-author" required placeholder="Penulis/Pengarang" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Penerbit</label>
+              <input type="text" id="add-publisher" required placeholder="Penerbit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
           </div>
           <div class="grid grid-cols-3 gap-2">
-            <input type="text" id="add-city" placeholder="Kota Terbit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-            <input type="text" id="add-year" placeholder="Tahun Terbit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-            <input type="number" id="add-pages" placeholder="Jumlah Hal." class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kota Terbit</label>
+              <input type="text" id="add-city" placeholder="Kota" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Tahun Terbit</label>
+              <input type="text" id="add-year" placeholder="Tahun" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Jml Halaman</label>
+              <input type="number" id="add-pages" placeholder="Halaman" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
           </div>
           <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="add-isbn" required placeholder="ISBN (Barcode)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-            <input type="text" id="add-call" placeholder="Call Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">ISBN / Barcode</label>
+              <input type="text" id="add-isbn" required placeholder="ISBN" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Call Number</label>
+              <input type="text" id="add-call" placeholder="Call Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
           </div>
-          <input type="url" id="add-pdf-url" placeholder="URL File E-Book / PDF (Opsional)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-          <textarea id="add-summary" placeholder="Isi Singkat / Ringkasan" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs h-16"></textarea>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Link PDF / E-Book (Opsional)</label>
+            <input type="url" id="add-pdf-url" placeholder="URL File E-Book / PDF" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Isi Singkat / Sinopsis</label>
+            <textarea id="add-summary" placeholder="Ringkasan" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs h-16"></textarea>
+          </div>
           <div class="grid grid-cols-2 gap-2">
-            <input type="number" id="add-price" placeholder="Harga (Rp)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-            <input type="number" id="add-stock" required placeholder="Jumlah Stok" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Harga (Rp)</label>
+              <input type="number" id="add-price" placeholder="Harga (Rp)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 mb-1 bg-amber-100 px-2 py-0.5 rounded-md inline-block">Jumlah Eksemplar</label>
+              <input type="number" id="add-copies" required placeholder="Jumlah Eksemplar" value="1" min="1" class="w-full bg-slate-50 border border-amber-300 rounded-2xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 font-bold text-slate-800">
+            </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
             <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
@@ -1440,7 +1649,7 @@
 
       document.getElementById('form-create-book').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const stock = Number(document.getElementById('add-stock').value);
+        const copies = Number(document.getElementById('add-copies').value || 1);
         if (db) {
           await addDoc(collection(db, 'books'), {
             no: state.books.length + 1,
@@ -1456,8 +1665,9 @@
             summary: document.getElementById('add-summary').value,
             price: Number(document.getElementById('add-price').value || 0),
             category: 'Umum',
-            stock: stock,
-            available: stock,
+            copies: copies,
+            stock: copies,
+            available: copies,
             coverColor: 'from-purple-500 to-indigo-600'
           });
         }
@@ -1466,6 +1676,7 @@
     };
 
     window.deleteBook = async function(id) {
+      if (confirm && !confirm("Yakin ingin menghapus buku ini?")) return;
       if (db) {
         await deleteDoc(doc(db, 'books', id));
       }
@@ -1499,11 +1710,13 @@
 
       document.getElementById('form-create-member').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const memberDocId = document.getElementById('m-id').value;
         if (db) {
-          await addDoc(collection(db, 'members'), {
+          // Gunakan doc ID sesuai No Anggota agar mudah di-update/delete
+          await setDoc(doc(db, 'members', memberDocId), {
             no: state.members.length + 1,
             name: document.getElementById('m-name').value,
-            id: document.getElementById('m-id').value,
+            id: memberDocId,
             status: document.getElementById('m-status').value,
             class: document.getElementById('m-class').value,
             address: document.getElementById('m-address').value,
@@ -1515,9 +1728,64 @@
       });
     };
 
+    window.openEditMemberModal = function(memberId) {
+      const member = state.members.find(m => m.id === memberId);
+      if (!member) return;
+
+      const modal = document.getElementById('modal-action');
+      const content = document.getElementById('modal-action-content');
+      modal.classList.remove('hidden');
+
+      content.innerHTML = `
+        <h4 class="text-sm font-bold text-slate-800 mb-4">Edit Data Anggota</h4>
+        <form id="form-edit-member" class="space-y-3">
+          <input type="text" id="edit-m-name" required value="${member.name}" placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          <input type="text" id="edit-m-id" disabled value="${member.id}" class="w-full bg-slate-200 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-500 cursor-not-allowed">
+          <div class="grid grid-cols-2 gap-2">
+            <select id="edit-m-status" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <option value="aktif" ${member.status === 'aktif' ? 'selected' : ''}>Aktif</option>
+              <option value="nonaktif" ${member.status === 'nonaktif' ? 'selected' : ''}>Non-Aktif</option>
+            </select>
+            <input type="text" id="edit-m-class" required value="${member.class || ''}" placeholder="Kelas / Unit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          </div>
+          <input type="text" id="edit-m-address" value="${member.address || ''}" placeholder="Alamat Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          <input type="text" id="edit-m-pass" required value="${member.password || '123'}" placeholder="Password Login" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-2xl text-xs font-semibold">Simpan Perubahan</button>
+          </div>
+        </form>
+      `;
+
+      document.getElementById('form-edit-member').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (db) {
+          try {
+            await updateDoc(doc(db, 'members', memberId), {
+              name: document.getElementById('edit-m-name').value,
+              status: document.getElementById('edit-m-status').value,
+              class: document.getElementById('edit-m-class').value,
+              address: document.getElementById('edit-m-address').value,
+              password: document.getElementById('edit-m-pass').value
+            });
+            modal.classList.add('hidden');
+            alert("Data anggota berhasil diperbarui!");
+          } catch (error) {
+            alert("Gagal memperbarui data: " + error.message);
+          }
+        }
+      });
+    };
+
     window.deleteMember = async function(id) {
+      if (!confirm("Yakin ingin menghapus anggota ini?")) return;
       if (db) {
-        await deleteDoc(doc(db, 'members', id));
+        try {
+          await deleteDoc(doc(db, 'members', id));
+          alert("Anggota berhasil dihapus.");
+        } catch (error) {
+          alert("Gagal menghapus anggota: " + error.message);
+        }
       }
     };
 
@@ -1529,3 +1797,4 @@
   </script>
 </body>
 </html>
+```
