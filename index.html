@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -36,6 +35,11 @@
       border-radius: 9999px;
     }
     @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
       body * {
         visibility: hidden !important;
       }
@@ -49,13 +53,26 @@
         width: 100%;
         display: flex !important;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
+        padding-top: 20px;
         min-height: 100vh;
       }
     }
   </style>
 </head>
 <body class="text-slate-700 antialiased selection:bg-indigo-500 selection:text-white min-h-screen">
+
+  <!-- Splash Screen -->
+  <div id="splash-screen" class="fixed inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
+    <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center text-white shadow-2xl mb-6 animate-bounce border border-white/30">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    </div>
+    <h1 class="text-white text-3xl font-extrabold tracking-tight mb-2">MIN 8 Sragen</h1>
+    <p class="text-indigo-200 text-sm font-medium uppercase tracking-widest text-center">Perpustakaan<br>Punjering Kaweruh</p>
+    <div class="mt-8 w-48 h-1.5 bg-indigo-900/50 rounded-full overflow-hidden">
+      <div class="h-full bg-amber-400 w-1/2 rounded-full animate-pulse"></div>
+    </div>
+  </div>
 
   <!-- Area khusus untuk cetak kartu (Print Area) -->
   <div id="print-area" class="hidden"></div>
@@ -262,6 +279,17 @@
 
   <!-- JavaScript Modules & App Logic -->
   <script type="module">
+    // HIDE SPLASH SCREEN AFTER LOAD
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.style.opacity = '0';
+          setTimeout(() => splash.remove(), 500); // Wait for transition
+        }
+      }, 1500);
+    });
+
     // KONFIGURASI APLIKASI
     const IS_PREVIEW = false; // Terhubung penuh ke Firebase Firestore
 
@@ -992,34 +1020,37 @@
         </div>
       `;
 
-      document.getElementById('form-add-circulation')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const memberId = document.getElementById('circ-member').value;
-        const bookId = document.getElementById('circ-book').value;
-        
-        const member = state.members.find(m => m.id === memberId);
-        const book = state.books.find(b => b.id === bookId);
-
-        if (member && book && db) {
-          const today = new Date().toISOString().split('T')[0];
-          const due = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const circForm = document.getElementById('form-add-circulation');
+      if (circForm) {
+        circForm.onsubmit = async (e) => {
+          e.preventDefault();
+          const memberId = document.getElementById('circ-member').value;
+          const bookId = document.getElementById('circ-book').value;
           
-          await addDoc(collection(db, 'transactions'), {
-            memberId: member.id,
-            memberName: member.name,
-            bookId: book.id,
-            bookTitle: book.title,
-            borrowDate: today,
-            dueDate: due,
-            status: 'dipinjam',
-            fine: 0
-          });
+          const member = state.members.find(m => m.id === memberId);
+          const book = state.books.find(b => b.id === bookId);
 
-          await updateDoc(doc(db, 'books', book.id), {
-            available: Number(book.available) - 1
-          });
-        }
-      });
+          if (member && book && db) {
+            const today = new Date().toISOString().split('T')[0];
+            const due = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            
+            await addDoc(collection(db, 'transactions'), {
+              memberId: member.id,
+              memberName: member.name,
+              bookId: book.id,
+              bookTitle: book.title,
+              borrowDate: today,
+              dueDate: due,
+              status: 'dipinjam',
+              fine: 0
+            });
+
+            await updateDoc(doc(db, 'books', book.id), {
+              available: Number(book.available) - 1
+            });
+          }
+        };
+      }
     }
 
     function renderMembers() {
@@ -1042,47 +1073,48 @@
         </div>
 
         <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-50 text-slate-500 font-semibold">
-              <tr>
-                <th class="p-3">No</th>
-                <th class="p-3">No Anggota</th>
-                <th class="p-3">Nama Lengkap</th>
-                <th class="p-3">Kelas / Unit</th>
-                <th class="p-3">Alamat</th>
-                <th class="p-3">Status</th>
-                <th class="p-3 text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              ${state.members.map((m, idx) => `
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold">
                 <tr>
-                  <td class="p-3 font-semibold text-slate-400">${m.no || idx + 1}</td>
-                  <td class="p-3 font-mono font-bold text-indigo-600">${m.id}</td>
-                  <td class="p-3 font-semibold text-slate-800">${m.name}</td>
-                  <td class="p-3">${m.class || '-'}</td>
-                  <td class="p-3 text-slate-500">${m.address || '-'}</td>
-                  <td class="p-3">
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-600 capitalize">${m.status || 'aktif'}</span>
-                  </td>
-                  <td class="p-3 text-right flex items-center justify-end gap-1">
-                    <button onclick="window.printMemberCard('${m.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold flex items-center gap-1" title="Cetak Kartu">
-                      <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-                    </button>
-                    <button onclick="window.printClearanceLetter('${m.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Bebas Pustaka">
-                      <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
-                    </button>
-                    <button onclick="window.openEditMemberModal('${m.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 rounded-xl text-xs font-semibold" title="Edit Anggota">
-                      <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                    </button>
-                    <button onclick="window.deleteMember('${m.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-xl bg-rose-50 hover:bg-rose-100" title="Hapus Anggota">
-                      <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                  </td>
+                  <th class="p-3 min-w-[50px]">No</th>
+                  <th class="p-3 min-w-[120px]">No Anggota</th>
+                  <th class="p-3 min-w-[150px]">Nama Lengkap</th>
+                  <th class="p-3 min-w-[100px]">Kelas / Unit</th>
+                  <th class="p-3 min-w-[150px]">Alamat</th>
+                  <th class="p-3 min-w-[80px]">Status</th>
+                  <th class="p-3 min-w-[150px] text-right">Aksi</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                ${state.members.map((m, idx) => `
+                  <tr>
+                    <td class="p-3 font-semibold text-slate-400">${m.no || idx + 1}</td>
+                    <td class="p-3 font-mono font-bold text-indigo-600">${m.id}</td>
+                    <td class="p-3 font-semibold text-slate-800">${m.name}</td>
+                    <td class="p-3">${m.class || '-'}</td>
+                    <td class="p-3 text-slate-500">${m.address || '-'}</td>
+                    <td class="p-3">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-600 capitalize">${m.status || 'aktif'}</span>
+                    </td>
+                    <td class="p-3 text-right flex items-center justify-end gap-1">
+                      <button onclick="window.printMemberCard('${m.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold flex items-center gap-1" title="Cetak Kartu">
+                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <button onclick="window.printClearanceLetter('${m.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Bebas Pustaka">
+                        <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <button onclick="window.openEditMemberModal('${m.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 rounded-xl text-xs font-semibold" title="Edit Anggota">
+                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <button onclick="window.deleteMember('${m.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-xl bg-rose-50 hover:bg-rose-100" title="Hapus Anggota">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
           </div>
         </div>
       `;
@@ -1247,54 +1279,78 @@
       XLSX.writeFile(workbook, "Laporan_Sirkulasi_Perpustakaan.xlsx");
     };
 
-    // --- CETAK KARTU PERPUSTAKAAN (FIXED) ---
+    // --- CETAK KARTU PERPUSTAKAAN (DESAIN BARU) ---
 
     window.printMemberCard = function(memberId) {
       const member = state.members.find(m => m.id === memberId);
       if (!member) return;
 
       const printArea = document.getElementById('print-area');
+      
+      // Ukuran standar PVC ID Card: 85.6mm x 53.98mm (Landscape)
       printArea.innerHTML = `
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100vh;">
-          <div style="width: 350px; height: 220px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border-radius: 16px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid #818cf8; font-family: 'Plus Jakarta Sans', sans-serif;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 8px;">
-              <div>
-                <h3 style="font-size: 11px; font-weight: 900; text-transform: uppercase; margin: 0; line-height: 1.2;">${state.libraryProfile.schoolName}</h3>
-                <p style="font-size: 9px; color: #c7d2fe; margin: 0;">${state.libraryProfile.libraryName}</p>
-              </div>
-              <div style="width: 28px; height: 28px; background: white; color: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">
-                📚
-              </div>
-            </div>
+        <div style="width: 85.6mm; height: 53.98mm; background: linear-gradient(135deg, #1e3a8a, #4f46e5); color: white; border-radius: 8px; padding: 12px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', sans-serif; position: relative; overflow: hidden; border: 1px solid #ddd; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          
+          <!-- Ornamen Latar Belakang -->
+          <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+          <div style="position: absolute; bottom: -30px; left: -10px; width: 100px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
 
-            <div style="display: flex; align-items: center; gap: 12px; margin: auto 0;">
-              <div style="width: 50px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; border: 1px solid rgba(255,255,255,0.4);">
-                ${member.name.charAt(0)}
-              </div>
-              <div style="font-size: 11px; line-height: 1.3;">
-                <p style="font-weight: bold; font-size: 13px; margin: 0; color: #ffffff;">${member.name}</p>
-                <p style="font-size: 10px; color: #e0e7ff; margin: 2px 0;">No. Anggota: <strong style="color: #fde047; font-family: monospace;">${member.id}</strong></p>
-                <p style="font-size: 10px; color: #e0e7ff; margin: 0;">Kelas / Unit: ${member.class || '-'}</p>
-                <p style="font-size: 10px; color: #e0e7ff; margin: 2px 0;">Status: <span style="color: #6ee7b7; font-weight: bold; text-transform: uppercase;">${member.status}</span></p>
-              </div>
+          <!-- Header Kartu -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 6px; z-index: 10;">
+            <div>
+              <h3 style="font-size: 11px; font-weight: 800; text-transform: uppercase; margin: 0; line-height: 1.1; letter-spacing: 0.5px;">${state.libraryProfile.schoolName}</h3>
+              <p style="font-size: 8px; color: #c7d2fe; margin: 0; font-weight: 500;">${state.libraryProfile.libraryName}</p>
             </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 6px; font-size: 8px; color: #e0e7ff;">
-              <div>
-                <p style="font-family: monospace; font-size: 10px; font-weight: bold; margin: 0; letter-spacing: 2px;">|||||| ||| ||||| |||</p>
-                <p style="margin: 0;">ID: ${member.id}</p>
-              </div>
-              <div style="text-align: right;">
-                <p style="margin: 0;">Masa Berlaku: Selamanya</p>
-                <p style="font-size: 7px; color: #c7d2fe; margin: 0; font-style: italic;">Harap bawa kartu saat berkunjung</p>
-              </div>
+            <div style="width: 24px; height: 24px; background: #ffffff; border-radius: 6px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             </div>
           </div>
+
+          <!-- Identitas Utama -->
+          <div style="display: flex; align-items: center; gap: 10px; margin: auto 0; z-index: 10;">
+            <div style="width: 45px; height: 55px; background: #ffffff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #4f46e5; border: 2px solid #a5b4fc; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              ${member.name.charAt(0).toUpperCase()}
+            </div>
+            <div style="font-size: 10px; line-height: 1.4;">
+              <p style="font-weight: 800; font-size: 12px; margin: 0; color: #ffffff; text-transform: uppercase;">${member.name}</p>
+              <p style="font-size: 9px; color: #e0e7ff; margin: 2px 0 0 0;">ID Anggota: <strong style="color: #fde047; font-family: monospace; font-size: 10px;">${member.id}</strong></p>
+              <p style="font-size: 9px; color: #e0e7ff; margin: 0;">Unit/Kelas: <strong style="color: #ffffff;">${member.class || '-'}</strong></p>
+              <p style="font-size: 9px; color: #e0e7ff; margin: 0;">Status: <span style="background: #34d399; color: #064e3b; padding: 1px 4px; border-radius: 2px; font-weight: bold; font-size: 7px; text-transform: uppercase; margin-left: 2px;">${member.status}</span></p>
+            </div>
+          </div>
+
+          <!-- Footer Barcode & Masa Berlaku -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 10;">
+            <div style="background: white; padding: 2px 4px; border-radius: 3px;">
+               <svg id="member-barcode-print"></svg>
+            </div>
+            <div style="text-align: right;">
+              <p style="margin: 0; font-size: 8px; font-weight: bold; color: #fde047;">KARTU ANGGOTA RESMI</p>
+              <p style="font-size: 7px; color: #c7d2fe; margin: 0; font-style: italic;">Berlaku selama menjadi siswa/i</p>
+            </div>
+          </div>
+
         </div>
       `;
+      
       printArea.classList.remove('hidden');
-      window.print();
-      printArea.classList.add('hidden');
+      
+      // Render Barcode using JsBarcode inside the card
+      JsBarcode("#member-barcode-print", member.id, {
+        format: "CODE128",
+        width: 1,
+        height: 15,
+        displayValue: false, // Hide text below barcode to save space
+        margin: 0,
+        background: "#ffffff",
+        lineColor: "#000000"
+      });
+
+      // Beri sedikit jeda agar barcode termuat sebelum print
+      setTimeout(() => {
+        window.print();
+        printArea.classList.add('hidden');
+      }, 300);
     };
 
     window.printClearanceLetter = function(memberId) {
@@ -1473,23 +1529,26 @@
         </form>
       `;
 
-      document.getElementById('form-update-profile').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const newProfile = {
-          schoolName: document.getElementById('set-school').value,
-          libraryName: document.getElementById('set-lib').value,
-          address: document.getElementById('set-addr').value,
-          headmaster: document.getElementById('set-head').value,
-          nip: document.getElementById('set-nip').value,
-          finePerDay: Number(document.getElementById('set-fine').value)
-        };
+      const settingsForm = document.getElementById('form-update-profile');
+      if (settingsForm) {
+        settingsForm.onsubmit = async (e) => {
+          e.preventDefault();
+          const newProfile = {
+            schoolName: document.getElementById('set-school').value,
+            libraryName: document.getElementById('set-lib').value,
+            address: document.getElementById('set-addr').value,
+            headmaster: document.getElementById('set-head').value,
+            nip: document.getElementById('set-nip').value,
+            finePerDay: Number(document.getElementById('set-fine').value)
+          };
 
-        if (db) {
-          await setDoc(doc(db, 'settings', 'library_profile'), newProfile);
-        }
-        modal.classList.add('hidden');
-        alert('Identitas Perpustakaan Berhasil Disimpan ke Cloud Firestore!');
-      });
+          if (db) {
+            await setDoc(doc(db, 'settings', 'library_profile'), newProfile);
+          }
+          modal.classList.add('hidden');
+          alert('Identitas Perpustakaan Berhasil Disimpan ke Cloud Firestore!');
+        };
+      }
     };
 
     // --- PDF READER & CAMERA BARCODE SCANNER ---
@@ -1558,7 +1617,7 @@
       }
     };
 
-    // --- FIRESTORE ACTIONS ---
+    // --- FIRESTORE ACTIONS (BOOKS & MEMBERS) ---
 
     window.returnBook = async function(transId, bookId, fineAmount = 0) {
       if (db) {
@@ -1647,36 +1706,39 @@
         </form>
       `;
 
-      document.getElementById('form-create-book').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const copies = Number(document.getElementById('add-copies').value || 1);
-        if (db) {
-          await addDoc(collection(db, 'books'), {
-            no: state.books.length + 1,
-            title: document.getElementById('add-title').value,
-            author: document.getElementById('add-author').value,
-            publisher: document.getElementById('add-publisher').value,
-            city: document.getElementById('add-city').value,
-            year: document.getElementById('add-year').value,
-            pages: Number(document.getElementById('add-pages').value || 0),
-            isbn: document.getElementById('add-isbn').value,
-            callNumber: document.getElementById('add-call').value,
-            pdfUrl: document.getElementById('add-pdf-url').value || '',
-            summary: document.getElementById('add-summary').value,
-            price: Number(document.getElementById('add-price').value || 0),
-            category: 'Umum',
-            copies: copies,
-            stock: copies,
-            available: copies,
-            coverColor: 'from-purple-500 to-indigo-600'
-          });
-        }
-        modal.classList.add('hidden');
-      });
+      const createBookForm = document.getElementById('form-create-book');
+      if (createBookForm) {
+        createBookForm.onsubmit = async (e) => {
+          e.preventDefault();
+          const copies = Number(document.getElementById('add-copies').value || 1);
+          if (db) {
+            await addDoc(collection(db, 'books'), {
+              no: state.books.length + 1,
+              title: document.getElementById('add-title').value,
+              author: document.getElementById('add-author').value,
+              publisher: document.getElementById('add-publisher').value,
+              city: document.getElementById('add-city').value,
+              year: document.getElementById('add-year').value,
+              pages: Number(document.getElementById('add-pages').value || 0),
+              isbn: document.getElementById('add-isbn').value,
+              callNumber: document.getElementById('add-call').value,
+              pdfUrl: document.getElementById('add-pdf-url').value || '',
+              summary: document.getElementById('add-summary').value,
+              price: Number(document.getElementById('add-price').value || 0),
+              category: 'Umum',
+              copies: copies,
+              stock: copies,
+              available: copies,
+              coverColor: 'from-purple-500 to-indigo-600'
+            });
+          }
+          modal.classList.add('hidden');
+        };
+      }
     };
 
     window.deleteBook = async function(id) {
-      if (confirm && !confirm("Yakin ingin menghapus buku ini?")) return;
+      if (!confirm("Yakin ingin menghapus buku ini?")) return;
       if (db) {
         await deleteDoc(doc(db, 'books', id));
       }
@@ -1708,24 +1770,34 @@
         </form>
       `;
 
-      document.getElementById('form-create-member').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const memberDocId = document.getElementById('m-id').value;
-        if (db) {
-          // Gunakan doc ID sesuai No Anggota agar mudah di-update/delete
-          await setDoc(doc(db, 'members', memberDocId), {
-            no: state.members.length + 1,
-            name: document.getElementById('m-name').value,
-            id: memberDocId,
-            status: document.getElementById('m-status').value,
-            class: document.getElementById('m-class').value,
-            address: document.getElementById('m-address').value,
-            role: 'siswa',
-            password: document.getElementById('m-pass').value
-          });
-        }
-        modal.classList.add('hidden');
-      });
+      const createMemberForm = document.getElementById('form-create-member');
+      if (createMemberForm) {
+        createMemberForm.onsubmit = async (e) => {
+          e.preventDefault();
+          const memberDocId = document.getElementById('m-id').value.trim();
+          if (!memberDocId) {
+             alert("ID Anggota tidak boleh kosong!");
+             return;
+          }
+          if (db) {
+            try {
+              await setDoc(doc(db, 'members', memberDocId), {
+                no: state.members.length + 1,
+                name: document.getElementById('m-name').value,
+                id: memberDocId,
+                status: document.getElementById('m-status').value,
+                class: document.getElementById('m-class').value,
+                address: document.getElementById('m-address').value,
+                role: 'siswa',
+                password: document.getElementById('m-pass').value
+              });
+              modal.classList.add('hidden');
+            } catch (error) {
+              alert("Gagal menambahkan anggota: " + error.message);
+            }
+          }
+        };
+      }
     };
 
     window.openEditMemberModal = function(memberId) {
@@ -1757,28 +1829,31 @@
         </form>
       `;
 
-      document.getElementById('form-edit-member').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (db) {
-          try {
-            await updateDoc(doc(db, 'members', memberId), {
-              name: document.getElementById('edit-m-name').value,
-              status: document.getElementById('edit-m-status').value,
-              class: document.getElementById('edit-m-class').value,
-              address: document.getElementById('edit-m-address').value,
-              password: document.getElementById('edit-m-pass').value
-            });
-            modal.classList.add('hidden');
-            alert("Data anggota berhasil diperbarui!");
-          } catch (error) {
-            alert("Gagal memperbarui data: " + error.message);
+      const editForm = document.getElementById('form-edit-member');
+      if (editForm) {
+        editForm.onsubmit = async (e) => {
+          e.preventDefault();
+          if (db) {
+            try {
+              await updateDoc(doc(db, 'members', memberId), {
+                name: document.getElementById('edit-m-name').value,
+                status: document.getElementById('edit-m-status').value,
+                class: document.getElementById('edit-m-class').value,
+                address: document.getElementById('edit-m-address').value,
+                password: document.getElementById('edit-m-pass').value
+              });
+              modal.classList.add('hidden');
+              alert("Data anggota berhasil diperbarui!");
+            } catch (error) {
+              alert("Gagal memperbarui data: " + error.message);
+            }
           }
-        }
-      });
+        };
+      }
     };
 
     window.deleteMember = async function(id) {
-      if (!confirm("Yakin ingin menghapus anggota ini?")) return;
+      if (!confirm("Yakin ingin menghapus anggota ini secara permanen?")) return;
       if (db) {
         try {
           await deleteDoc(doc(db, 'members', id));
