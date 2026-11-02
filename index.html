@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,7 +8,7 @@
   <!-- PWA Manifest & App Icon -->
   <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBlcnB1c3Rha2FhbiBNSU4gOCBTcmFnZW4iLAogICJzaG9ydF9uYW1lIjogIkUtUGVycHVzIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNGOEY5RkUiLAogICJ0aGVtZV9jb2xvciI6ICIjNjM2NkYxIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9wbGFjZWhvbGQuY28vNTEyeDUxMi82MzY2RjEvZmZmP3RleHQ9UEwiLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
   <meta name="theme-color" content="#6366F1">
-  <!-- Icon Buku untuk PWA Install (Menggantikan icon PL sebelumnya) -->
+  <!-- Icon Buku untuk PWA Install -->
   <link rel="apple-touch-icon" href="https://placehold.co/192x192/6366F1/fff?text=📚">
   
   <!-- Tailwind CSS & Lucide Icons -->
@@ -281,16 +280,15 @@
 
   <!-- JavaScript Modules & App Logic -->
   <script type="module">
-    // HIDE SPLASH SCREEN AFTER LOAD (Aman dan tidak stuck)
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-          splash.style.opacity = '0';
-          setTimeout(() => splash.remove(), 500); 
-        }
-      }, 1500);
-    });
+    // PERBAIKAN BUG STUCK SPLASH SCREEN:
+    // Jalankan timer penutupan secara langsung, tidak perlu menunggu event 'load' dari browser
+    setTimeout(() => {
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(() => splash.remove(), 500); 
+      }
+    }, 1500); // Tutup otomatis dalam 1.5 detik
 
     // KONFIGURASI APLIKASI
     const IS_PREVIEW = false; // Terhubung penuh ke Firebase Firestore
@@ -1874,4 +1872,4 @@
         <h4 class="text-sm font-bold text-slate-800 mb-4">Edit Data Anggota</h4>
         <form id="form-edit-member" class="space-y-3">
           <input type="text" id="edit-m-name" required value="${member.name}" placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
-          <input type="text" id="edit-m-id" disabled value="${member.id}" class="w-full bg-slate-200 border border-sl
+          <input type="text" id="edit-m-id" disabled value="${member.id}" class="w-full bg-slate-200 bord
