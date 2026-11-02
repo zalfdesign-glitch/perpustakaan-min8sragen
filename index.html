@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,7 +9,8 @@
   <!-- PWA Manifest & App Icon -->
   <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBlcnB1c3Rha2FhbiBNSU4gOCBTcmFnZW4iLAogICJzaG9ydF9uYW1lIjogIkUtUGVycHVzIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNGOEY5RkUiLAogICJ0aGVtZV9jb2xvciI6ICIjNjM2NkYxIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9wbGFjZWhvbGQuY28vNTEyeDUxMi82MzY2RjEvZmZmP3RleHQ9UEwiLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
   <meta name="theme-color" content="#6366F1">
-  <link rel="apple-touch-icon" href="https://placehold.co/192x192/6366F1/fff?text=PL">
+  <!-- Icon Buku untuk PWA Install (Menggantikan icon PL sebelumnya) -->
+  <link rel="apple-touch-icon" href="https://placehold.co/192x192/6366F1/fff?text=📚">
   
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -67,8 +69,8 @@
     <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center text-white shadow-2xl mb-6 animate-bounce border border-white/30">
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
     </div>
-    <h1 class="text-white text-3xl font-extrabold tracking-tight mb-2">MIN 8 Sragen</h1>
-    <p class="text-indigo-200 text-sm font-medium uppercase tracking-widest text-center">Perpustakaan<br>Punjering Kaweruh</p>
+    <h1 class="text-white text-3xl font-extrabold tracking-tight mb-2" id="splash-school">MIN 8 Sragen</h1>
+    <p class="text-indigo-200 text-sm font-medium uppercase tracking-widest text-center" id="splash-lib">Perpustakaan<br>Punjering Kaweruh</p>
     <div class="mt-8 w-48 h-1.5 bg-indigo-900/50 rounded-full overflow-hidden">
       <div class="h-full bg-amber-400 w-1/2 rounded-full animate-pulse"></div>
     </div>
@@ -81,11 +83,11 @@
   <div id="app" class="flex flex-col md:flex-row min-h-screen">
     
     <!-- Sidebar Navigation (Desktop) -->
-    <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-100 p-6 fixed h-full z-20 justify-between">
+    <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-100 p-6 fixed h-full z-20 justify-between shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
       <div>
         <!-- Logo -->
         <div class="flex items-center gap-3 mb-8">
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-md shadow-indigo-200">
             <i data-lucide="book-open-check" class="w-6 h-6"></i>
           </div>
           <div>
@@ -102,7 +104,7 @@
 
       <!-- Settings & PWA Install Link -->
       <div class="mb-4 space-y-2">
-        <button id="btn-install-pwa" onclick="window.triggerPWAInstall()" class="hidden w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 transition-all shadow-sm">
+        <button id="btn-install-pwa" onclick="window.triggerPWAInstall()" class="hidden w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 transition-all shadow-md shadow-emerald-200">
           <i data-lucide="download-cloud" class="w-4 h-4"></i>
           <span>Install Aplikasi</span>
         </button>
@@ -117,7 +119,7 @@
       <!-- Account / Mode Info -->
       <div class="pt-4 border-t border-slate-100">
         <div id="user-info-card" class="bg-indigo-50/50 p-3 rounded-2xl flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm" id="user-avatar-initial">
+          <div class="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow-sm" id="user-avatar-initial">
             A
           </div>
           <div class="flex-1 min-w-0">
@@ -132,7 +134,7 @@
     </aside>
 
     <!-- Bottom Navigation (Mobile) -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-100 py-2 px-4 z-30 flex justify-around items-center shadow-lg" id="mobile-nav">
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-100 py-2 px-4 z-30 flex justify-around items-center shadow-[0_-4px_24px_rgba(0,0,0,0.04)]" id="mobile-nav">
       <!-- Rendered via JS -->
     </div>
 
@@ -142,7 +144,7 @@
       <!-- Top Header -->
       <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-slate-800" id="page-title">Dashboard Utama</h2>
+          <h2 class="text-2xl font-black text-slate-800 tracking-tight" id="page-title">Dashboard Utama</h2>
           <p class="text-xs text-slate-500" id="page-subtitle">Sistem Informasi Perpustakaan Digital</p>
         </div>
 
@@ -150,7 +152,7 @@
           <!-- Search Bar Container with Live Results -->
           <div class="relative flex-1 sm:w-72">
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 z-10"></i>
-            <input type="text" id="global-search" placeholder="Cari judul, ISBN, atau NISN..." class="w-full bg-white border border-slate-200 pl-9 pr-8 py-2 rounded-2xl text-xs focus:outline-none focus:border-indigo-500 transition-all shadow-sm">
+            <input type="text" id="global-search" placeholder="Cari judul, ISBN, atau NISN..." class="w-full bg-white border border-slate-200 pl-9 pr-8 py-2 rounded-2xl text-xs focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all shadow-sm">
             <button id="clear-search-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold">✕</button>
 
             <!-- Search Dropdown Results -->
@@ -182,7 +184,7 @@
   <div id="modal-pdf-viewer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[60] flex flex-col hidden">
     <div class="bg-slate-800 text-white px-6 py-4 flex items-center justify-between border-b border-slate-700">
       <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+        <div class="w-8 h-8 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-bold text-xs shadow-inner">
           📖
         </div>
         <div>
@@ -202,7 +204,7 @@
   <!-- Modal Barcode Scanner Kamera -->
   <div id="modal-barcode-scanner" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
-      <button onclick="window.closeBarcodeScanner()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1">
+      <button onclick="window.closeBarcodeScanner()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 bg-slate-100 hover:bg-slate-200 rounded-full">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
       <div class="text-center mb-4">
@@ -216,12 +218,12 @@
   <!-- Modal Login -->
   <div id="modal-login" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
-      <button id="btn-close-login" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1">
+      <button id="btn-close-login" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 bg-slate-100 hover:bg-slate-200 rounded-full">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
       <div class="text-center mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-3">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-3 shadow-sm">
           <i data-lucide="shield-check" class="w-6 h-6"></i>
         </div>
         <h3 class="text-lg font-bold text-slate-800">Masuk ke Sistem</h3>
@@ -242,11 +244,11 @@
       <form id="form-login-admin" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Email Admin</label>
-          <input type="email" id="admin-email" required placeholder="admin@sekolah.sch.id" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500">
+          <input type="email" id="admin-email" required placeholder="admin@sekolah.sch.id" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 focus:bg-white">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
-          <input type="password" id="admin-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500">
+          <input type="password" id="admin-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 focus:bg-white">
         </div>
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-2xl text-xs transition-all shadow-md shadow-indigo-200">
           Masuk sebagai Admin
@@ -257,11 +259,11 @@
       <form id="form-login-member" class="space-y-4 hidden">
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">NISN / NIP / ID Anggota</label>
-          <input type="text" id="member-id" required placeholder="Contoh: 1001" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500">
+          <input type="text" id="member-id" required placeholder="Contoh: 1001" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 focus:bg-white">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
-          <input type="password" id="member-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500">
+          <input type="password" id="member-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 focus:bg-white">
         </div>
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-2xl text-xs transition-all shadow-md shadow-indigo-200">
           Masuk Anggota
@@ -279,13 +281,13 @@
 
   <!-- JavaScript Modules & App Logic -->
   <script type="module">
-    // HIDE SPLASH SCREEN AFTER LOAD
+    // HIDE SPLASH SCREEN AFTER LOAD (Aman dan tidak stuck)
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         if (splash) {
           splash.style.opacity = '0';
-          setTimeout(() => splash.remove(), 500); // Wait for transition
+          setTimeout(() => splash.remove(), 500); 
         }
       }, 1500);
     });
@@ -293,7 +295,7 @@
     // KONFIGURASI APLIKASI
     const IS_PREVIEW = false; // Terhubung penuh ke Firebase Firestore
 
-    // FIREBASE CONFIGURATION
+    // FIREBASE CONFIGURATION (Pastikan sesuai dengan proyek Anda)
     const firebaseConfig = {
       apiKey: "AIzaSyDC_5Ds6w5SLzPBpGlaNa_Ms4JPspInsPA",
       authDomain: "perpus-min-8-sragen.firebaseapp.com",
@@ -382,7 +384,7 @@
           await signInWithEmailAndPassword(auth, email, pass);
           document.getElementById('modal-login').classList.add('hidden');
         } catch (err) {
-          alert("Login Admin Gagal: " + err.message);
+          alert("Login Admin Gagal: Periksa kembali email dan password.");
         }
       }
     });
@@ -471,8 +473,13 @@
           state.libraryProfile = docSnap.data();
           const schoolEl = document.getElementById('sidebar-school-title');
           const libEl = document.getElementById('sidebar-lib-title');
+          const splashSchool = document.getElementById('splash-school');
+          const splashLib = document.getElementById('splash-lib');
+          
           if (schoolEl) schoolEl.textContent = state.libraryProfile.schoolName;
           if (libEl) libEl.textContent = state.libraryProfile.libraryName;
+          if (splashSchool) splashSchool.textContent = state.libraryProfile.schoolName;
+          if (splashLib) splashLib.innerHTML = `${state.libraryProfile.libraryName}`;
         } else {
           setDoc(profileDocRef, state.libraryProfile);
         }
@@ -481,7 +488,10 @@
 
       // 2. Sync Books Collection
       onSnapshot(collection(db, 'books'), (snapshot) => {
-        state.books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        state.books = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return { ...data, _firestoreId: doc.id, id: data.id || doc.id };
+        });
         if (state.activeMenu === 'books' || state.activeMenu === 'dashboard') {
           if (state.activeMenu === 'books') renderBooks();
           if (state.activeMenu === 'dashboard') renderDashboard();
@@ -490,7 +500,10 @@
 
       // 3. Sync Members Collection
       onSnapshot(collection(db, 'members'), (snapshot) => {
-        state.members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        state.members = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return { ...data, _firestoreId: doc.id, id: data.id || doc.id };
+        });
         if (state.activeMenu === 'members' || state.activeMenu === 'dashboard') {
           if (state.activeMenu === 'members') renderMembers();
           if (state.activeMenu === 'dashboard') renderDashboard();
@@ -499,7 +512,10 @@
 
       // 4. Sync Transactions Collection
       onSnapshot(collection(db, 'transactions'), (snapshot) => {
-        state.transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        state.transactions = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return { ...data, _firestoreId: doc.id, id: data.id || doc.id };
+        });
         if (state.activeMenu === 'circulation' || state.activeMenu === 'mybooks' || state.activeMenu === 'reports') {
           window.switchView(state.activeMenu);
         }
@@ -573,7 +589,7 @@
           if (matchedBooks.length > 0) {
             html += `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 py-1 bg-slate-50 rounded-lg mb-1">Buku (${matchedBooks.length})</div>`;
             html += matchedBooks.map(b => `
-              <div onclick="window.selectSearchResult('book', '${b.id}')" class="p-2 hover:bg-indigo-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between gap-2">
+              <div onclick="window.selectSearchResult('book')" class="p-2 hover:bg-indigo-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between gap-2">
                 <div class="min-w-0">
                   <p class="text-xs font-bold text-slate-800 truncate">${b.title}</p>
                   <p class="text-[10px] text-slate-500 truncate">${b.author} • ISBN: ${b.isbn || '-'}</p>
@@ -586,7 +602,7 @@
           if (matchedMembers.length > 0) {
             html += `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 py-1 bg-slate-50 rounded-lg mt-2 mb-1">Anggota (${matchedMembers.length})</div>`;
             html += matchedMembers.map(m => `
-              <div onclick="window.selectSearchResult('member', '${m.id}')" class="p-2 hover:bg-indigo-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between gap-2">
+              <div onclick="window.selectSearchResult('member')" class="p-2 hover:bg-indigo-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between gap-2">
                 <div class="min-w-0">
                   <p class="text-xs font-bold text-slate-800 truncate">${m.name}</p>
                   <p class="text-[10px] text-slate-500 truncate">No ID/NISN: ${m.id} • ${m.class}</p>
@@ -613,7 +629,7 @@
       });
     }
 
-    window.selectSearchResult = function(type, id) {
+    window.selectSearchResult = function(type) {
       document.getElementById('search-results-dropdown').classList.add('hidden');
       document.getElementById('global-search').value = '';
       document.getElementById('clear-search-btn').classList.add('hidden');
@@ -636,7 +652,7 @@
 
       const desktopNav = document.getElementById('desktop-nav');
       desktopNav.innerHTML = filteredMenus.map(m => `
-        <button onclick="window.switchView('${m.id}')" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all ${state.activeMenu === m.id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}">
+        <button onclick="window.switchView('${m.id}')" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all ${state.activeMenu === m.id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-500 hover:bg-slate-50 hover:text-indigo-600'}">
           <i data-lucide="${m.icon}" class="w-4 h-4"></i>
           <span>${m.label}</span>
         </button>
@@ -644,7 +660,7 @@
 
       const mobileNav = document.getElementById('mobile-nav');
       mobileNav.innerHTML = filteredMenus.map(m => `
-        <button onclick="window.switchView('${m.id}')" class="flex flex-col items-center gap-1 p-2 rounded-xl text-[10px] font-medium ${state.activeMenu === m.id ? 'text-indigo-600' : 'text-slate-400'}">
+        <button onclick="window.switchView('${m.id}')" class="flex flex-col items-center gap-1 p-2 rounded-xl text-[10px] font-medium transition-all ${state.activeMenu === m.id ? 'text-indigo-600' : 'text-slate-400'}">
           <i data-lucide="${m.icon}" class="w-5 h-5"></i>
           <span>${m.label}</span>
         </button>
@@ -736,33 +752,33 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+          <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
               <i data-lucide="book" class="w-5 h-5"></i>
             </div>
             <p class="text-[11px] text-slate-400 font-semibold">Total Koleksi Buku</p>
-            <h4 class="text-xl font-extrabold text-slate-800">${totalBooks}</h4>
+            <h4 class="text-xl font-black text-slate-800">${totalBooks}</h4>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
+          <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+            <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
               <i data-lucide="repeat" class="w-5 h-5"></i>
             </div>
             <p class="text-[11px] text-slate-400 font-semibold">Sedang Dipinjam</p>
-            <h4 class="text-xl font-extrabold text-slate-800">${totalBorrowed}</h4>
+            <h4 class="text-xl font-black text-slate-800">${totalBorrowed}</h4>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+          <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
               <i data-lucide="users" class="w-5 h-5"></i>
             </div>
             <p class="text-[11px] text-slate-400 font-semibold">Anggota Terdaftar</p>
-            <h4 class="text-xl font-extrabold text-slate-800">${totalMembers}</h4>
+            <h4 class="text-xl font-black text-slate-800">${totalMembers}</h4>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mb-3">
+          <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+            <div class="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mb-3">
               <i data-lucide="clock" class="w-5 h-5"></i>
             </div>
             <p class="text-[11px] text-slate-400 font-semibold">Keterlambatan</p>
-            <h4 class="text-xl font-extrabold text-slate-800">${state.transactions.filter(t => t.status === 'terlambat').length}</h4>
+            <h4 class="text-xl font-black text-slate-800">${state.transactions.filter(t => t.status === 'terlambat').length}</h4>
           </div>
         </div>
       `;
@@ -793,7 +809,7 @@
               <button onclick="window.exportBooksExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-2xl text-xs font-semibold shadow-sm flex items-center gap-1.5">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Excel
               </button>
-              <label class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 cursor-pointer px-3 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5">
+              <label class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 cursor-pointer px-3 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
                 <i data-lucide="upload" class="w-3.5 h-3.5"></i> Import Excel
                 <input type="file" accept=".xlsx, .xls, .csv" onchange="window.importBooksExcel(event)" class="hidden">
               </label>
@@ -816,12 +832,12 @@
 
     function renderBookGrid(isAdmin) {
       if (state.books.length === 0) {
-        return `<div class="bg-white rounded-3xl p-12 text-center text-slate-400 text-xs">Belum ada data buku tersimpan. Silakan tambah atau import buku.</div>`;
+        return `<div class="bg-white rounded-3xl p-12 text-center text-slate-400 text-xs shadow-sm">Belum ada data buku tersimpan. Silakan tambah atau import buku.</div>`;
       }
       return `
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           ${state.books.map((b) => `
-            <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-all relative group">
+            <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-lg transition-all relative group">
               <div>
                 <div class="w-full h-44 rounded-2xl bg-gradient-to-br ${b.coverColor || 'from-indigo-500 to-purple-600'} p-4 text-white flex flex-col justify-between shadow-inner relative overflow-hidden mb-3">
                   <div class="flex items-center justify-between z-10">
@@ -847,13 +863,13 @@
 
               <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
                 ${b.pdfUrl ? `
-                  <button onclick="window.openPdfViewer('${b.id}')" class="px-3 py-1.5 rounded-xl text-[10px] font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200/60 flex items-center gap-1">
+                  <button onclick="window.openPdfViewer('${b._firestoreId}')" class="px-3 py-1.5 rounded-xl text-[10px] font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200/60 flex items-center gap-1 transition-colors">
                     <i data-lucide="file-text" class="w-3 h-3"></i> Baca PDF
                   </button>
                 ` : `<span class="text-[10px] text-slate-400 italic">Cetak Fisik</span>`}
 
                 ${isAdmin ? `
-                  <button onclick="window.deleteBook('${b.id}')" class="text-rose-500 hover:text-rose-700 p-1">
+                  <button onclick="window.deleteBook('${b._firestoreId}')" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-xl transition-colors">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                   </button>
                 ` : ''}
@@ -866,12 +882,12 @@
 
     function renderBookTable(isAdmin) {
       if (state.books.length === 0) {
-        return `<div class="bg-white rounded-3xl p-12 text-center text-slate-400 text-xs">Belum ada data buku tersimpan.</div>`;
+        return `<div class="bg-white rounded-3xl p-12 text-center text-slate-400 text-xs shadow-sm">Belum ada data buku tersimpan.</div>`;
       }
       return `
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+            <table class="w-full text-left text-xs whitespace-nowrap">
               <thead class="bg-slate-50 text-slate-500 font-semibold">
                 <tr>
                   <th class="p-3">No</th>
@@ -880,17 +896,17 @@
                   <th class="p-3">Penerbit & Kota</th>
                   <th class="p-3">Tahun / Hal.</th>
                   <th class="p-3">ISBN / Call No</th>
-                  <th class="p-3">Eksemplar</th>
-                  <th class="p-3">Versi Digital</th>
-                  <th class="p-3">Stok Sisa</th>
+                  <th class="p-3 text-center">Eksemplar</th>
+                  <th class="p-3 text-center">Versi Digital</th>
+                  <th class="p-3 text-center">Stok Sisa</th>
                   ${isAdmin ? `<th class="p-3 text-right">Aksi</th>` : ''}
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
                 ${state.books.map((b, idx) => `
-                  <tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="p-3 font-semibold text-slate-400">${b.no || idx + 1}</td>
-                    <td class="p-3 font-bold text-slate-800">
+                    <td class="p-3 font-bold text-slate-800 whitespace-normal min-w-[200px]">
                       <div>${b.title}</div>
                       <span class="text-[10px] text-indigo-600 font-normal line-clamp-1">${b.summary || '-'}</span>
                     </td>
@@ -898,27 +914,29 @@
                     <td class="p-3 text-slate-600">${b.publisher || '-'} (${b.city || '-'})</td>
                     <td class="p-3 text-slate-600">${b.year || '-'} / ${b.pages || 0} hal.</td>
                     <td class="p-3 font-mono text-[11px] text-slate-500">${b.isbn || '-'}<br><span class="text-indigo-600">${b.callNumber || '-'}</span></td>
-                    <td class="p-3 font-semibold text-slate-700">${b.copies || b.stock || 1} eks.</td>
-                    <td class="p-3">
+                    <td class="p-3 font-semibold text-slate-700 text-center">${b.copies || b.stock || 1}</td>
+                    <td class="p-3 text-center">
                       ${b.pdfUrl ? `
-                        <button onclick="window.openPdfViewer('${b.id}')" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200/60 flex items-center gap-1">
-                          <i data-lucide="file-text" class="w-3 h-3"></i> Baca PDF
+                        <button onclick="window.openPdfViewer('${b._firestoreId}')" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200/60 inline-flex items-center gap-1 transition-colors">
+                          <i data-lucide="file-text" class="w-3 h-3"></i> Buka
                         </button>
                       ` : `<span class="text-[10px] text-slate-400 italic">Tidak ada</span>`}
                     </td>
-                    <td class="p-3">
+                    <td class="p-3 text-center">
                       <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${b.available > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
                         ${b.available}/${b.stock || b.copies || 1}
                       </span>
                     </td>
                     ${isAdmin ? `
-                      <td class="p-3 text-right flex items-center justify-end gap-1">
-                        <button onclick="window.printBookLabel('${b.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Label & Barcode">
-                          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-                        </button>
-                        <button onclick="window.deleteBook('${b.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-xl" title="Hapus">
-                          <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
+                      <td class="p-3 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                          <button onclick="window.printBookLabel('${b._firestoreId}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold transition-colors" title="Cetak Label & Barcode">
+                            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                          </button>
+                          <button onclick="window.deleteBook('${b._firestoreId}')" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-xl transition-colors" title="Hapus">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                          </button>
+                        </div>
                       </td>
                     ` : ''}
                   </tr>
@@ -944,29 +962,29 @@
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Anggota</label>
               <select id="circ-member" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:outline-none">
-                ${state.members.map(m => `<option value="${m.id}">${m.name} (${m.id})</option>`).join('')}
+                ${state.members.map(m => `<option value="${m._firestoreId}">${m.name} (${m.id})</option>`).join('')}
               </select>
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Buku</label>
               <select id="circ-book" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:outline-none">
-                ${state.books.filter(b => b.available > 0).map(b => `<option value="${b.id}">${b.title} [ISBN: ${b.isbn}] (Sisa: ${b.available})</option>`).join('')}
+                ${state.books.filter(b => b.available > 0).map(b => `<option value="${b._firestoreId}">${b.title} [ISBN: ${b.isbn}] (Sisa: ${b.available})</option>`).join('')}
               </select>
             </div>
             <div class="flex items-end">
-              <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-2xl text-xs shadow-sm">
+              <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-2xl text-xs shadow-sm transition-colors">
                 Proses Pinjam
               </button>
             </div>
           </form>
         </div>
 
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] overflow-hidden">
           <div class="p-4 border-b border-slate-100">
             <h4 class="text-sm font-bold text-slate-800">Daftar Peminjaman Aktif</h4>
           </div>
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+            <table class="w-full text-left text-xs whitespace-nowrap">
               <thead class="bg-slate-50 text-slate-500 font-semibold">
                 <tr>
                   <th class="p-3">Peminjam</th>
@@ -991,9 +1009,9 @@
                   }
                   
                   return `
-                  <tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="p-3 font-semibold text-slate-800">${t.memberName}</td>
-                    <td class="p-3">${t.bookTitle}</td>
+                    <td class="p-3 whitespace-normal min-w-[200px]">${t.bookTitle}</td>
                     <td class="p-3">${t.borrowDate}</td>
                     <td class="p-3 font-semibold ${currentStatus === 'terlambat' ? 'text-rose-600' : ''}">${t.dueDate}</td>
                     <td class="p-3">
@@ -1004,13 +1022,15 @@
                         ${fineAmount > 0 ? `<span class="text-[10px] font-bold text-rose-600">Denda: Rp${fineAmount.toLocaleString()}</span>` : ''}
                       </div>
                     </td>
-                    <td class="p-3 text-right flex items-center justify-end gap-1">
-                      <button onclick="window.printReceipt('${t.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Struk">
-                        <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
-                      </button>
-                      <button onclick="window.returnBook('${t.id}', '${t.bookId}', ${fineAmount})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1">
-                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Kembali
-                      </button>
+                    <td class="p-3 text-right">
+                      <div class="flex items-center justify-end gap-1">
+                        <button onclick="window.printReceipt('${t._firestoreId}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold transition-colors" title="Cetak Struk">
+                          <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="window.returnBook('${t._firestoreId}', '${t.bookFirestoreId || t.bookId}', ${fineAmount})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1 transition-colors">
+                          <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Kembali
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 `}).join('')}
@@ -1024,20 +1044,21 @@
       if (circForm) {
         circForm.onsubmit = async (e) => {
           e.preventDefault();
-          const memberId = document.getElementById('circ-member').value;
-          const bookId = document.getElementById('circ-book').value;
+          const memberFirestoreId = document.getElementById('circ-member').value;
+          const bookFirestoreId = document.getElementById('circ-book').value;
           
-          const member = state.members.find(m => m.id === memberId);
-          const book = state.books.find(b => b.id === bookId);
+          const member = state.members.find(m => m._firestoreId === memberFirestoreId);
+          const book = state.books.find(b => b._firestoreId === bookFirestoreId);
 
           if (member && book && db) {
             const today = new Date().toISOString().split('T')[0];
             const due = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             
             await addDoc(collection(db, 'transactions'), {
-              memberId: member.id,
+              memberId: member.id, // Logical NISN
               memberName: member.name,
               bookId: book.id,
+              bookFirestoreId: book._firestoreId, // Penting untuk auto-restore stok
               bookTitle: book.title,
               borrowDate: today,
               dueDate: due,
@@ -1045,7 +1066,7 @@
               fine: 0
             });
 
-            await updateDoc(doc(db, 'books', book.id), {
+            await updateDoc(doc(db, 'books', book._firestoreId), {
               available: Number(book.available) - 1
             });
           }
@@ -1059,22 +1080,22 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <p class="text-xs text-slate-500">Manajemen data anggota (Siswa & Guru).</p>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="window.exportMembersExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-2xl text-xs font-semibold shadow-sm flex items-center gap-1.5">
+            <button onclick="window.exportMembersExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-2xl text-xs font-semibold shadow-sm flex items-center gap-1.5 transition-colors">
               <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Excel
             </button>
-            <label class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 cursor-pointer px-3 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5">
+            <label class="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 cursor-pointer px-3 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5 transition-colors">
               <i data-lucide="upload" class="w-3.5 h-3.5"></i> Import Excel
               <input type="file" accept=".xlsx, .xls, .csv" onchange="window.importMembersExcel(event)" class="hidden">
             </label>
-            <button onclick="window.openAddMemberModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-2xl text-xs font-semibold shadow-sm flex items-center gap-1.5">
+            <button onclick="window.openAddMemberModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-2xl text-xs font-semibold shadow-sm flex items-center gap-1.5 transition-colors">
               <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Tambah Anggota
             </button>
           </div>
         </div>
 
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+            <table class="w-full text-left text-xs whitespace-nowrap">
               <thead class="bg-slate-50 text-slate-500 font-semibold">
                 <tr>
                   <th class="p-3 min-w-[50px]">No</th>
@@ -1088,28 +1109,30 @@
               </thead>
               <tbody class="divide-y divide-slate-100">
                 ${state.members.map((m, idx) => `
-                  <tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="p-3 font-semibold text-slate-400">${m.no || idx + 1}</td>
                     <td class="p-3 font-mono font-bold text-indigo-600">${m.id}</td>
-                    <td class="p-3 font-semibold text-slate-800">${m.name}</td>
+                    <td class="p-3 font-semibold text-slate-800 whitespace-normal">${m.name}</td>
                     <td class="p-3">${m.class || '-'}</td>
-                    <td class="p-3 text-slate-500">${m.address || '-'}</td>
+                    <td class="p-3 text-slate-500 whitespace-normal max-w-[200px] truncate">${m.address || '-'}</td>
                     <td class="p-3">
                       <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-600 capitalize">${m.status || 'aktif'}</span>
                     </td>
-                    <td class="p-3 text-right flex items-center justify-end gap-1">
-                      <button onclick="window.printMemberCard('${m.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold flex items-center gap-1" title="Cetak Kartu">
-                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-                      </button>
-                      <button onclick="window.printClearanceLetter('${m.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-600 p-1.5 rounded-xl text-xs font-semibold" title="Cetak Bebas Pustaka">
-                        <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
-                      </button>
-                      <button onclick="window.openEditMemberModal('${m.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 rounded-xl text-xs font-semibold" title="Edit Anggota">
-                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                      </button>
-                      <button onclick="window.deleteMember('${m.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-xl bg-rose-50 hover:bg-rose-100" title="Hapus Anggota">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                      </button>
+                    <td class="p-3 text-right">
+                      <div class="flex items-center justify-end gap-1">
+                        <button onclick="window.printMemberCard('${m._firestoreId}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors" title="Cetak Kartu">
+                          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="window.printClearanceLetter('${m._firestoreId}')" class="bg-amber-50 hover:bg-amber-100 text-amber-600 p-1.5 rounded-xl text-xs font-semibold transition-colors" title="Cetak Bebas Pustaka">
+                          <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="window.openEditMemberModal('${m._firestoreId}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 rounded-xl text-xs font-semibold transition-colors" title="Edit Anggota">
+                          <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="window.deleteMember('${m._firestoreId}')" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-xl transition-colors" title="Hapus Anggota">
+                          <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 `).join('')}
@@ -1128,19 +1151,19 @@
       const myBorrows = state.transactions.filter(t => t.memberId === state.currentUser.id);
 
       view.innerHTML = `
-        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
           <h4 class="text-sm font-bold text-slate-800 mb-4">Riwayat & Pinjaman Saya</h4>
           ${myBorrows.length === 0 ? `
             <p class="text-xs text-slate-400">Anda belum memiliki riwayat peminjaman buku.</p>
           ` : `
             <div class="space-y-3">
               ${myBorrows.map(t => `
-                <div class="p-4 rounded-2xl bg-slate-50 flex items-center justify-between">
+                <div class="p-4 rounded-2xl bg-slate-50 flex items-center justify-between border border-slate-100">
                   <div>
                     <h5 class="text-xs font-bold text-slate-800">${t.bookTitle}</h5>
                     <p class="text-[11px] text-slate-400 mt-0.5">Tenggat Pengembalian: <strong>${t.dueDate}</strong></p>
                   </div>
-                  <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${t.status === 'dikembalikan' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}">
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${t.status === 'dikembalikan' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'} uppercase">
                     ${t.status}
                   </span>
                 </div>
@@ -1154,7 +1177,7 @@
     function renderReports() {
       const view = document.getElementById('view-reports');
       view.innerHTML = `
-        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
           <div class="flex items-center justify-between mb-6">
             <div>
               <h4 class="text-sm font-bold text-slate-800 mb-2">Ringkasan Laporan Perpustakaan</h4>
@@ -1227,8 +1250,8 @@
               year: item["Tahun Terbit"] || item["tahun terbit"] || "-",
               pages: Number(item["Jumlah Halaman"] || item["jumlah halaman"] || 0),
               copies: copiesVal,
-              isbn: item["ISBN"] || item["isbn"] || "-",
-              callNumber: item["Call Number"] || item["call number"] || "-",
+              isbn: String(item["ISBN"] || item["isbn"] || "-"),
+              callNumber: String(item["Call Number"] || item["call number"] || "-"),
               summary: item["Isi Singkat"] || item["isi singkat"] || item["ringkasan"] || "-",
               price: Number(item["Harga"] || item["harga"] || 0),
               category: 'Umum',
@@ -1237,7 +1260,7 @@
               coverColor: 'from-indigo-500 to-purple-600'
             });
           }
-          alert(`Berhasil mengimpor data buku ke Firestore!`);
+          alert(`Berhasil mengimpor ${jsonData.length} data buku ke Firestore!`);
         }
       };
       reader.readAsArrayBuffer(file);
@@ -1257,6 +1280,40 @@
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Data Anggota");
       XLSX.writeFile(workbook, "Data_Anggota_Perpustakaan.xlsx");
+    };
+
+    window.importMembersExcel = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+        if (jsonData.length > 0 && db) {
+          for (let [idx, item] of jsonData.entries()) {
+            const memberId = String(item["No Anggota"] || item["no anggota"] || item["nisn"] || item["NISN"] || Date.now() + idx);
+            
+            // Kita menggunakan setDoc agar Firestore ID yang terbentuk identik dengan ID logis anggota (menghindari duplikasi)
+            await setDoc(doc(db, 'members', memberId), {
+              no: item["No"] || item["no"] || idx + 1,
+              name: item["Nama"] || item["nama"] || "Tanpa Nama",
+              id: memberId,
+              status: item["Status"] || item["status"] || "aktif",
+              class: item["Kelas"] || item["kelas"] || "-",
+              address: item["Alamat"] || item["alamat"] || "-",
+              role: 'siswa',
+              password: "123" // Password default untuk mass-import
+            });
+          }
+          alert(`Berhasil mengimpor ${jsonData.length} data anggota ke Firestore!`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
     };
 
     window.exportTransactionsExcel = function() {
@@ -1281,8 +1338,8 @@
 
     // --- CETAK KARTU PERPUSTAKAAN (DESAIN BARU) ---
 
-    window.printMemberCard = function(memberId) {
-      const member = state.members.find(m => m.id === memberId);
+    window.printMemberCard = function(firestoreId) {
+      const member = state.members.find(m => m._firestoreId === firestoreId);
       if (!member) return;
 
       const printArea = document.getElementById('print-area');
@@ -1353,11 +1410,11 @@
       }, 300);
     };
 
-    window.printClearanceLetter = function(memberId) {
-      const member = state.members.find(m => m.id === memberId);
+    window.printClearanceLetter = function(firestoreId) {
+      const member = state.members.find(m => m._firestoreId === firestoreId);
       if (!member) return;
       
-      const activeBorrows = state.transactions.filter(t => t.memberId === memberId && t.status !== 'dikembalikan');
+      const activeBorrows = state.transactions.filter(t => t.memberId === member.id && t.status !== 'dikembalikan');
       if (activeBorrows.length > 0) {
         alert("Siswa masih memiliki tanggungan pinjaman buku! Harap kembalikan terlebih dahulu.");
         return;
@@ -1403,8 +1460,8 @@
       printArea.classList.add('hidden');
     };
 
-    window.printBookLabel = function(bookId) {
-      const book = state.books.find(b => b.id === bookId);
+    window.printBookLabel = function(firestoreId) {
+      const book = state.books.find(b => b._firestoreId === firestoreId);
       if (!book) return;
 
       const printArea = document.getElementById('print-area');
@@ -1436,8 +1493,8 @@
       }, 100);
     };
 
-    window.printReceipt = function(transId) {
-      const trans = state.transactions.find(t => t.id === transId);
+    window.printReceipt = function(firestoreId) {
+      const trans = state.transactions.find(t => t._firestoreId === firestoreId);
       if (!trans) return;
 
       const todayDate = new Date();
@@ -1498,33 +1555,33 @@
         <form id="form-update-profile" class="space-y-3">
           <div>
             <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nama Sekolah / Madrasah</label>
-            <input type="text" id="set-school" required value="${state.libraryProfile.schoolName}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <input type="text" id="set-school" required value="${state.libraryProfile.schoolName}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nama Perpustakaan</label>
-            <input type="text" id="set-lib" required value="${state.libraryProfile.libraryName}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <input type="text" id="set-lib" required value="${state.libraryProfile.libraryName}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-slate-600 mb-1">Alamat Instansi</label>
-            <input type="text" id="set-addr" required value="${state.libraryProfile.address}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <input type="text" id="set-addr" required value="${state.libraryProfile.address}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kepala Sekolah / Perpus</label>
-              <input type="text" id="set-head" required value="${state.libraryProfile.headmaster}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="set-head" required value="${state.libraryProfile.headmaster}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">NIP Kepala</label>
-              <input type="text" id="set-nip" required value="${state.libraryProfile.nip}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="set-nip" required value="${state.libraryProfile.nip}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
             <div class="col-span-2">
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Denda Keterlambatan per Hari (Rp)</label>
-              <input type="number" id="set-fine" required value="${state.libraryProfile.finePerDay || 500}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="number" id="set-fine" required value="${state.libraryProfile.finePerDay || 500}" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-2xl text-xs font-semibold">Simpan Perubahan</button>
+            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-semibold transition-colors shadow-sm">Simpan Perubahan</button>
           </div>
         </form>
       `;
@@ -1553,8 +1610,8 @@
 
     // --- PDF READER & CAMERA BARCODE SCANNER ---
 
-    window.openPdfViewer = function(bookId) {
-      const book = state.books.find(b => b.id === bookId);
+    window.openPdfViewer = function(firestoreId) {
+      const book = state.books.find(b => b._firestoreId === firestoreId);
       if (!book || !book.pdfUrl) return;
 
       document.getElementById('pdf-modal-title').textContent = book.title;
@@ -1588,11 +1645,11 @@
 
           if (matchedBook) {
             const selectBook = document.getElementById('circ-book');
-            if (selectBook) selectBook.value = matchedBook.id;
+            if (selectBook) selectBook.value = matchedBook._firestoreId;
             alert(`Buku Terdeteksi: "${matchedBook.title}"`);
           } else if (matchedMember) {
             const selectMember = document.getElementById('circ-member');
-            if (selectMember) selectMember.value = matchedMember.id;
+            if (selectMember) selectMember.value = matchedMember._firestoreId;
             alert(`Anggota Terdeteksi: "${matchedMember.name}"`);
           } else {
             alert(`Hasil Barcode: ${decodedText}`);
@@ -1619,18 +1676,18 @@
 
     // --- FIRESTORE ACTIONS (BOOKS & MEMBERS) ---
 
-    window.returnBook = async function(transId, bookId, fineAmount = 0) {
+    window.returnBook = async function(transFirestoreId, bookRefId, fineAmount = 0) {
       if (db) {
-        await updateDoc(doc(db, 'transactions', transId), { 
+        await updateDoc(doc(db, 'transactions', transFirestoreId), { 
           status: 'dikembalikan', 
           returnDate: new Date().toISOString().split('T')[0],
           fine: fineAmount 
         });
-        const book = state.books.find(b => b.id === bookId);
+        const book = state.books.find(b => b._firestoreId === bookRefId || b.id === bookRefId);
         if (book) {
           const maxStock = Number(book.copies || book.stock || 1);
           const currentAvail = Number(book.available ?? maxStock);
-          await updateDoc(doc(db, 'books', bookId), { available: Math.min(maxStock, currentAvail + 1) });
+          await updateDoc(doc(db, 'books', book._firestoreId), { available: Math.min(maxStock, currentAvail + 1) });
         }
       }
     };
@@ -1645,63 +1702,63 @@
         <form id="form-create-book" class="space-y-3">
           <div>
             <label class="block text-[11px] font-semibold text-slate-600 mb-1">Judul Buku</label>
-            <input type="text" id="add-title" required placeholder="Judul Buku" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <input type="text" id="add-title" required placeholder="Judul Buku" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Pengarang</label>
-              <input type="text" id="add-author" required placeholder="Penulis/Pengarang" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="add-author" required placeholder="Penulis/Pengarang" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Penerbit</label>
-              <input type="text" id="add-publisher" required placeholder="Penerbit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="add-publisher" required placeholder="Penerbit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
           </div>
           <div class="grid grid-cols-3 gap-2">
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kota Terbit</label>
-              <input type="text" id="add-city" placeholder="Kota" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="add-city" placeholder="Kota" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Tahun Terbit</label>
-              <input type="text" id="add-year" placeholder="Tahun" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="add-year" placeholder="Tahun" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Jml Halaman</label>
-              <input type="number" id="add-pages" placeholder="Halaman" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="number" id="add-pages" placeholder="Halaman" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">ISBN / Barcode</label>
-              <input type="text" id="add-isbn" required placeholder="ISBN" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="add-isbn" required placeholder="ISBN" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Call Number</label>
-              <input type="text" id="add-call" placeholder="Call Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="text" id="add-call" placeholder="Call Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-slate-600 mb-1">Link PDF / E-Book (Opsional)</label>
-            <input type="url" id="add-pdf-url" placeholder="URL File E-Book / PDF" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <input type="url" id="add-pdf-url" placeholder="URL File E-Book / PDF" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-slate-600 mb-1">Isi Singkat / Sinopsis</label>
-            <textarea id="add-summary" placeholder="Ringkasan" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs h-16"></textarea>
+            <textarea id="add-summary" placeholder="Ringkasan" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs h-16 focus:ring-2 focus:ring-indigo-100 focus:outline-none"></textarea>
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[11px] font-semibold text-slate-600 mb-1">Harga (Rp)</label>
-              <input type="number" id="add-price" placeholder="Harga (Rp)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+              <input type="number" id="add-price" placeholder="Harga (Rp)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-slate-700 mb-1 bg-amber-100 px-2 py-0.5 rounded-md inline-block">Jumlah Eksemplar</label>
-              <input type="number" id="add-copies" required placeholder="Jumlah Eksemplar" value="1" min="1" class="w-full bg-slate-50 border border-amber-300 rounded-2xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 font-bold text-slate-800">
+              <input type="number" id="add-copies" required placeholder="Jumlah Eksemplar" value="1" min="1" class="w-full bg-slate-50 border border-amber-300 rounded-2xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 font-bold text-slate-800">
             </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-2xl text-xs font-semibold">Simpan Buku</button>
+            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-semibold transition-colors shadow-sm">Simpan Buku</button>
           </div>
         </form>
       `;
@@ -1737,10 +1794,14 @@
       }
     };
 
-    window.deleteBook = async function(id) {
+    window.deleteBook = async function(firestoreId) {
       if (!confirm("Yakin ingin menghapus buku ini?")) return;
       if (db) {
-        await deleteDoc(doc(db, 'books', id));
+        try {
+          await deleteDoc(doc(db, 'books', firestoreId));
+        } catch (error) {
+          alert("Gagal menghapus buku: " + error.message);
+        }
       }
     };
 
@@ -1752,20 +1813,20 @@
       content.innerHTML = `
         <h4 class="text-sm font-bold text-slate-800 mb-4">Tambah Anggota Baru</h4>
         <form id="form-create-member" class="space-y-3">
-          <input type="text" id="m-name" required placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-          <input type="text" id="m-id" required placeholder="No Anggota / NISN / NIP" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          <input type="text" id="m-name" required placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
+          <input type="text" id="m-id" required placeholder="No Anggota / NISN / NIP" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           <div class="grid grid-cols-2 gap-2">
-            <select id="m-status" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <select id="m-status" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
               <option value="aktif">Aktif</option>
               <option value="nonaktif">Non-Aktif</option>
             </select>
-            <input type="text" id="m-class" required placeholder="Kelas / Unit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+            <input type="text" id="m-class" required placeholder="Kelas / Unit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           </div>
-          <input type="text" id="m-address" placeholder="Alamat Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-          <input type="password" id="m-pass" required placeholder="Password Login" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
+          <input type="text" id="m-address" placeholder="Alamat Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
+          <input type="password" id="m-pass" required placeholder="Password Login" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-2xl text-xs font-semibold">Simpan</button>
+            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-semibold transition-colors shadow-sm">Simpan</button>
           </div>
         </form>
       `;
@@ -1774,17 +1835,18 @@
       if (createMemberForm) {
         createMemberForm.onsubmit = async (e) => {
           e.preventDefault();
-          const memberDocId = document.getElementById('m-id').value.trim();
-          if (!memberDocId) {
+          const memberLogicalId = document.getElementById('m-id').value.trim();
+          if (!memberLogicalId) {
              alert("ID Anggota tidak boleh kosong!");
              return;
           }
           if (db) {
             try {
-              await setDoc(doc(db, 'members', memberDocId), {
+              // Menyimpan ID logis sebagai ID dokumen untuk konsistensi import/tambah
+              await setDoc(doc(db, 'members', memberLogicalId), {
                 no: state.members.length + 1,
                 name: document.getElementById('m-name').value,
-                id: memberDocId,
+                id: memberLogicalId,
                 status: document.getElementById('m-status').value,
                 class: document.getElementById('m-class').value,
                 address: document.getElementById('m-address').value,
@@ -1800,8 +1862,8 @@
       }
     };
 
-    window.openEditMemberModal = function(memberId) {
-      const member = state.members.find(m => m.id === memberId);
+    window.openEditMemberModal = function(firestoreId) {
+      const member = state.members.find(m => m._firestoreId === firestoreId);
       if (!member) return;
 
       const modal = document.getElementById('modal-action');
@@ -1811,65 +1873,5 @@
       content.innerHTML = `
         <h4 class="text-sm font-bold text-slate-800 mb-4">Edit Data Anggota</h4>
         <form id="form-edit-member" class="space-y-3">
-          <input type="text" id="edit-m-name" required value="${member.name}" placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-          <input type="text" id="edit-m-id" disabled value="${member.id}" class="w-full bg-slate-200 border border-slate-200 rounded-2xl px-3 py-2 text-xs text-slate-500 cursor-not-allowed">
-          <div class="grid grid-cols-2 gap-2">
-            <select id="edit-m-status" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-              <option value="aktif" ${member.status === 'aktif' ? 'selected' : ''}>Aktif</option>
-              <option value="nonaktif" ${member.status === 'nonaktif' ? 'selected' : ''}>Non-Aktif</option>
-            </select>
-            <input type="text" id="edit-m-class" required value="${member.class || ''}" placeholder="Kelas / Unit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-          </div>
-          <input type="text" id="edit-m-address" value="${member.address || ''}" placeholder="Alamat Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-          <input type="text" id="edit-m-pass" required value="${member.password || '123'}" placeholder="Password Login" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs">
-          <div class="flex justify-end gap-2 pt-2">
-            <button type="button" onclick="document.getElementById('modal-action').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-500">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-2xl text-xs font-semibold">Simpan Perubahan</button>
-          </div>
-        </form>
-      `;
-
-      const editForm = document.getElementById('form-edit-member');
-      if (editForm) {
-        editForm.onsubmit = async (e) => {
-          e.preventDefault();
-          if (db) {
-            try {
-              await updateDoc(doc(db, 'members', memberId), {
-                name: document.getElementById('edit-m-name').value,
-                status: document.getElementById('edit-m-status').value,
-                class: document.getElementById('edit-m-class').value,
-                address: document.getElementById('edit-m-address').value,
-                password: document.getElementById('edit-m-pass').value
-              });
-              modal.classList.add('hidden');
-              alert("Data anggota berhasil diperbarui!");
-            } catch (error) {
-              alert("Gagal memperbarui data: " + error.message);
-            }
-          }
-        };
-      }
-    };
-
-    window.deleteMember = async function(id) {
-      if (!confirm("Yakin ingin menghapus anggota ini secara permanen?")) return;
-      if (db) {
-        try {
-          await deleteDoc(doc(db, 'members', id));
-          alert("Anggota berhasil dihapus.");
-        } catch (error) {
-          alert("Gagal menghapus anggota: " + error.message);
-        }
-      }
-    };
-
-    // Initialize App
-    initFirestoreSync();
-    renderNavigation();
-    renderUserBadge();
-    initGlobalSearch();
-  </script>
-</body>
-</html>
-```
+          <input type="text" id="edit-m-name" required value="${member.name}" placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-100 focus:outline-none">
+          <input type="text" id="edit-m-id" disabled value="${member.id}" class="w-full bg-slate-200 border border-sl
